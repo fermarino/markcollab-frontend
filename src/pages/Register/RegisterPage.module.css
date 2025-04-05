@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+.leftSide {
+  flex: 1;
+  background-color: #007aff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.5s ease;
+}
+
+.rightSide {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease forwards;
+  background-color: white;
+}
+
+.mobileContainer {
+  display: none;
+  background-color: white;
+}
+
+.desktopBackButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+}
+
+.mobileBackButton {
+  padding: 16px;
+  align-self: flex-start;
+  color: #1e5bf5;
+}
+
+
+@media (max-width: 950px) {
+  .container {
+    display: none;
+  }
+
+  .mobileContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

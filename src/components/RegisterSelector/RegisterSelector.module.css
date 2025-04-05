@@ -1,0 +1,116 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #007aff;
+  width: 100%;
+}
+
+.content {
+  text-align: center;
+  color: white;
+  max-width: 700px;
+  width: 100%;
+  padding: 1rem;
+}
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+p {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  padding: 1rem 2rem;
+  border: 2px solid white;
+  border-radius: 10px;
+  background-color: transparent;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover,
+.button:focus {
+  background-color: #121212;
+  border-color: #121212;
+  color: white;
+}
+
+@media (min-width: 1024px) {
+  h2 {
+    font-size: 2.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    font-size: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .button {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+  }
+
+  .buttons {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 1rem;
+    height: 100vh;
+  }
+
+  .content {
+    max-width: 100%;
+  }
+
+  .backButton {
+    top: 10px;
+    left: 10px;
+    font-size: 0.9rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .button {
+    width: 80%;
+  }
+}
