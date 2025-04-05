@@ -8,32 +8,49 @@
 label {
   font-weight: 500;
   font-size: 0.95rem;
-  color: #111827; /* Cinza bem escuro */
+  color: #111827;
 }
 
-input {
-  padding: 1.1rem 1rem;
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
-  border: 1px solid #d1d5db; /* Cinza claro */
   background-color: #fff;
+  transition: border-color 0.2s ease;
+  padding: 0 0.75rem;
+}
+
+.inputWrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
   font-size: 0.95rem;
   color: #111827;
-  transition: border-color 0.2s ease;
-  outline: none;
+  padding: 1.1rem 0.75rem;
 }
 
-input::placeholder {
-  color: #9ca3af; /* Cinza claro para placeholder */
+.inputWrapper input::placeholder {
+  color: #9ca3af;
   font-size: 0.9rem;
 }
 
-input:focus {
-  border-color: #629bff; 
+.inputWrapper:focus-within {
+  border-color: #629bff;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 .inputError {
   border-color: #ef4444 !important;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 1.1rem;
 }
 
 .error {

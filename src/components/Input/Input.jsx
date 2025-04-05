@@ -1,18 +1,22 @@
 import styles from './Input.module.css';
 
-const Input = ({ label, name, value, onChange, type = 'text', error, placeholder, maxLength }) => (
+const Input = ({ label, name, value, onChange, type = 'text', error, placeholder, maxLength, icon: Icon }) => (
   <div className={styles.inputGroup}>
     <label htmlFor={name}>{label}</label>
-    <input
-      id={name}
-      name={name}
-      value={value}
-      onChange={onChange}
-      type={type}
-      placeholder={placeholder || `Digite seu${label.toLowerCase().startsWith('s') ? 'a' : ''} ${label.toLowerCase()}`}
-      className={error ? styles.inputError : ''}
-      maxLength={maxLength}
-    />
+    
+    <div className={`${styles.inputWrapper} ${error ? styles.inputError : ''}`}>
+      {Icon && <span className={styles.icon}><Icon /></span>}
+      <input
+        id={name}
+        name={name}
+        value={value}
+        onChange={onChange}
+        type={type}
+        placeholder={placeholder}
+        maxLength={maxLength}
+      />
+    </div>
+
     {error && <span className={styles.error}>{error}</span>}
   </div>
 );

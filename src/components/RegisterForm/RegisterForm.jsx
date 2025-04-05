@@ -4,6 +4,14 @@ import Button from '../Button/Button';
 import styles from './RegisterForm.module.css';
 import { formatCpfCnpj, formatPhone, stripFormatting } from '../../utils/formatUtils';
 import { Link } from 'react-router-dom';
+import {
+  FaUser,
+  FaBuilding,
+  FaIdCard,
+  FaEnvelope,
+  FaPhone,
+  FaLock,
+} from 'react-icons/fa';
 
 const RegisterForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -67,6 +75,8 @@ const RegisterForm = ({ type }) => {
         value={formData.name}
         onChange={handleChange}
         error={errors.name}
+        placeholder="Nome completo"
+        icon={FaUser}
       />
 
       {type === 'contratante' && (
@@ -76,6 +86,8 @@ const RegisterForm = ({ type }) => {
           value={formData.company}
           onChange={handleChange}
           error={errors.company}
+          placeholder="Nome da empresa"
+          icon={FaBuilding}
         />
       )}
 
@@ -86,15 +98,19 @@ const RegisterForm = ({ type }) => {
         onChange={handleChange}
         error={errors.cpfCnpj}
         maxLength={18}
+        placeholder="Digite seu CPF ou CNPJ"
+        icon={FaIdCard}
       />
 
       <Input
-        label="Email"
+        label="E-mail"
         name="email"
         type="email"
         value={formData.email}
         onChange={handleChange}
         error={errors.email}
+        placeholder="Digite seu E-mail"
+        icon={FaEnvelope}
       />
 
       <Input
@@ -104,6 +120,8 @@ const RegisterForm = ({ type }) => {
         onChange={handleChange}
         error={errors.phone}
         maxLength={15}
+        placeholder="Digite seu telefone"
+        icon={FaPhone}
       />
 
       <Input
@@ -114,6 +132,7 @@ const RegisterForm = ({ type }) => {
         onChange={handleChange}
         error={errors.password}
         placeholder="Digite sua senha"
+        icon={FaLock}
       />
 
       <div className={styles.actions}>
