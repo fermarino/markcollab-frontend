@@ -1,0 +1,169 @@
+.container {
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    padding: 20px 0;
+  }
+  
+  .titulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .botao-criar {
+    background: none;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: block;
+    margin-left: auto;
+  
+}
+  .botao-criar:hover{
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+   }
+  
+  .projetos {
+    margin-top: 20px;
+  }
+  
+  .projeto-card {
+    background: #fff;
+    border: 1.2px solid #dad6d6;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 3px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+  }
+  
+  .projeto-info {
+    width: 100%;
+  }
+  
+  .projeto-info h3 {
+    font-size: 18px;
+    margin: 0;
+    text-align: left;
+    padding: 10px;
+    margin-top: 3px;
+    margin-bottom: 10px;
+
+    
+  }
+  
+  .projeto-info p {
+    font-size: 14px;
+    color: #555;
+    text-align: left;
+  }
+  
+  .projeto-status-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 15px;
+  }
+  
+  .projeto-status {
+    padding: 10px 15px;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 30px;
+    
+    display: block;
+    margin-left: auto;
+  }
+  
+  .projeto-status.concluido {
+    background-color: green;
+  }
+  
+  .projeto-status.andamento {
+    background-color: yellow;
+    color: black;
+  }
+  
+  .projeto-status.analise {
+    background-color: red;
+  }
+  
+  .menu-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    
+  }
+  
+  .menu-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    
+  }
+  
+  .menu-opcoes {
+    position: absolute;
+    right: 0;
+    background: #fff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    border: 1.2px solid #dad6d6;
+  }
+  
+  .menu-item {
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    font-family: poppins;
+    box-sizing: border-box;
+    
+  }
+  
+  .menu-item:hover {
+    background: #dddee2;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      width: 95%;
+    }
+  
+    .projeto-card {
+      padding: 20px;
+    }
+  
+    .projeto-status-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .projeto-status {
+      width: 30%;
+      margin-top: 30px;
+    }
+        
+  }
