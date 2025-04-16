@@ -1,0 +1,86 @@
+.meusprojetos-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+.meusprojetos-content {
+    width: 60%;
+    margin-top: 40px;
+    padding-bottom: 50px;
+}
+
+.voltar {
+    text-decoration: none;
+    color: #000;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.titulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.projetos {
+    margin-top: 20px;
+}
+
+.projeto-card {
+    background: #fff;
+    border: 1.2px solid #dad6d6;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 3px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+}
+
+.projeto-info h3 {
+    font-size: 18px;
+    margin: 0;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.projeto-info p {
+    font-size: 14px;
+    color: #555;
+    text-align: left;
+}
+
+.projeto-status {
+    padding: 10px 15px;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 20px;
+    align-self: flex-end;
+}
+
+@media (max-width: 768px) {
+    .meusprojetos-content {
+        width: 90%;
+    }
+
+    .projeto-card {
+        padding: 20px;
+    }
+
+    .projeto-status {
+        width: auto;
+        font-size: 13px;
+        text-align: center;
+    }
+}
