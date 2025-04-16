@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import './Proposals.css';
+import Navbar from '../../components/navbar/Navbar.jsx';
 
 const Proposals = () => {
     const [deadline, setDeadline] = useState('');
-
+   
     return (
-        <div className="proposta-container">
+         
+        <div className="proposta-container"><Navbar />  
             <div className="proposta-content">
+              
             <a href="/projects" className="back-link">&larr; Voltar</a>
                 <div className="proposta-details">
                     <h3 className="proposta-project-title">Nome_do_projeto</h3>

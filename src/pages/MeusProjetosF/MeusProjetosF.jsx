@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./MeusProjetosF.css";
+import Navbar from '../../components/navbar/Navbar.jsx';
 
 const MeusProjetosF = () => {
     const projetos = [
@@ -31,8 +32,11 @@ const MeusProjetosF = () => {
     ];
 
     return (
+        <>
+        <Navbar/>
         <div className="meusprojetos-container">
             <div className="meusprojetos-content">
+                
                 <Link to="/buscarprojetos" className="voltar">
                     ← Voltar
                 </Link>
@@ -56,6 +60,7 @@ const MeusProjetosF = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

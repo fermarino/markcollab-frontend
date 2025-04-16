@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ProjectEdit.css';
+import Navbar from '../../components/navbar/Navbar.jsx';
 
 const ProjectEdit = () => {
   const [project, setProject] = useState({
@@ -23,7 +24,7 @@ const ProjectEdit = () => {
 
   return (
     <>
-      
+      <Navbar/>
       <div className="project-edit-container">
         <a href="/" className="back-link">&larr; Voltar</a>
         

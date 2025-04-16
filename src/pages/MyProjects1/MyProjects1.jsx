@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Popupcancelar from "../../components/CancelProject/CancelProject";
 import "./MyProjects1.css";
+import Navbar from '../../components/navbar/Navbar.jsx';
 
 const projetosMock = [
   { id: 1, nome: "Nome_do_projeto", descricao: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor si.", status: "Concluído", cor: "#28a745" },
@@ -36,7 +37,7 @@ const MyProjects1 = () => {
 
   return (
     <div>
-     
+     <Navbar/>
       <div className="container">
         <h1 className="titulo">Meus projetos</h1>
         <button className="botao-criar"> + Criar novo projeto</button>

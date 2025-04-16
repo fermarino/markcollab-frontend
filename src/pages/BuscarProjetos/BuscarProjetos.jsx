@@ -1,11 +1,14 @@
 import React from "react";
 import "./BuscarProjetos.css";
 import { FaSearch } from "react-icons/fa";
+import Navbar from '../../components/navbar/Navbar.jsx';
 
 function BuscarProjetos() {
   return (
-    <div className="buscar-container">
-      {/* Navbar será adicionada aqui */}
+    <>
+      <Navbar/>
+      <div className="buscar-container">
+        
       <br />
       <br />
       <br />
@@ -41,6 +44,7 @@ function BuscarProjetos() {
 
       {/* Rodapé será adicionado aqui */}
     </div>
+    </>
   );
 }
 

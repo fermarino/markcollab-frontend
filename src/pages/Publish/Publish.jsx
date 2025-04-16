@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Navbar from '../../components/navbar/Navbar.jsx';
 import './Publish.css';
 
 const Publish = () => {
@@ -8,7 +9,7 @@ const Publish = () => {
     specifications: '',
     deadline: ''
   });
-
+ 
   const handleChange = (e) => {
     setProject({ ...project, [e.target.name]: e.target.value });
   };
@@ -27,7 +28,7 @@ const Publish = () => {
 
   return (
     <>
-   
+    <Navbar/>
       <div className="project-edit-container">
         <a href="/projects" className="back-link">&larr; Voltar</a>
         <h2 className="edit-title">Publicar projeto</h2>
