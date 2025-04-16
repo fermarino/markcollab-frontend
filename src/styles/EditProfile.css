@@ -1,0 +1,181 @@
+/* Fonte geral */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff; /* Fundo branco para toda a tela */
+}
+
+/* Container principal */
+.edit-profile-container {
+    display: flex;
+    max-width: 1000px;
+    margin: 0;
+    background-color: #fff; /* Fundo branco */
+    align-items: flex-start; /* Alinha os itens no topo */
+    justify-content: flex-start; /* Alinha todos os itens no canto esquerdo */
+}
+
+/* Sidebar */
+.edit-profile-sidebar {
+    width: 25%;
+    padding-right: 20px;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Alinha no topo */
+    height: 100vh;
+}
+
+/* Cabeçalho da Sidebar */
+.edit-profile-sidebar-header {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px;
+    gap: 55px; /* Aumentando o afastamento do botão "<" */
+    justify-content: center; /* Centraliza "Meu Perfil" */
+}
+
+/* Botão de voltar */
+.back-button {
+    font-size: 18px;
+    margin-left: -35px; /* Afastamento do botão "<" */
+}
+
+/* Menu lateral */
+.edit-profile-sidebar-menu {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 30px;
+}
+
+/* Itens do menu */
+.edit-profile-sidebar-item {
+    margin-bottom: 40px; /* Aumenta o espaçamento entre os itens */
+    color: #666;
+    cursor: pointer;
+    text-align: left; /* Alinha o texto à esquerda */
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Aumenta o espaço entre o ícone e o texto */
+}
+
+/* Ícones no menu lateral */
+.edit-profile-sidebar-item i {
+    font-size: 18px;
+    color: #007bff;
+}
+
+/* Itens ativos do menu */
+.edit-profile-sidebar-item.active {
+    font-weight: bold;
+    color: #000000;
+}
+
+/* Formulário */
+.edit-profile-form {
+    width: 75%;
+    padding-left: 40px;
+    padding-top: 20px;
+}
+
+/* Título do formulário */
+.edit-profile-form-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+/* Grupos e campos do formulário */
+.edit-profile-group {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.edit-profile-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.edit-profile-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+/* Inputs lado a lado */
+.edit-profile-row {
+    display: flex;
+    gap: 20px;
+}
+
+/* Botões */
+.edit-profile-buttons {
+    display: flex;
+    justify-content: flex-start; /* Alinhado com as caixas de texto */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.edit-profile-button {
+    padding: 10px 25px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.edit-profile-button.cancel {
+    background-color: transparent;
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.edit-profile-button.cancel:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.edit-profile-button.save {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.edit-profile-button.save:hover {
+    background-color: #0056b3;
+}
+
+/* Ajustes para centralizar "Meu Perfil" e alinhar com "Dados Pessoais" */
+.edit-profile-sidebar-header {
+    justify-content: center; /* Centraliza o título "Meu Perfil" no topo */
+}
+
+/* Remover borda azul */
+.edit-profile-sidebar-line {
+    display: none;
+}
+
+/* Remover borda cinza do topo e de baixo da página */
+body, .edit-profile-container {
+    border: none;
+}
+
+/* Adicionando linha azul abaixo de "Meu Perfil" */
+.edit-profile-title {
+    position: relative;
+    padding-bottom: 6px;
+    border-bottom: 3px solid #007bff; /* Azul igual ao botão salvar */
+}

@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.fazerproposta-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: #ffffff;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.fazerproposta-content {
+    width: 100%;
+    max-width: 931px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.voltar {
+    text-decoration: none;
+    color: #000;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.titulo {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2C65F6;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.titulo span {
+    color: #2C65F6;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.campo label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.campo input,
+.campo textarea {
+    width: 110%;
+    height: 50px;
+    border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    color: #000;
+    font-family: 'Poppins', sans-serif;
+}
+
+.campo textarea {
+    height: 100px;
+    resize: none;
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+    color: #C4C4C4;
+}
+
+.btn-enviar {
+    width: 40%;
+    height: 50px;
+    background-color: #2C65F6;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-enviar:hover {
+    background-color: #1E4FD6;
+}
