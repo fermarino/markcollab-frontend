@@ -54,6 +54,15 @@
   color: #333;
 }
 
+.profile_input{
+  padding: 12px 15px;
+  border: 1px solid #CCCCCC;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #555;
+}
+
 
 .profile_input:disabled {
   background-color: #f2f2f2;
@@ -117,4 +126,8 @@
   background-color: #ffffff;
   color: #555;
   height: 200px;
+}
+
+.aboutInput:disabled{
+  background-color: #f2f2f2;
 }

@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./FazerProposta.css";
+import Navbar from '../../components/Navbar/Navbar'
 
 const FazerProposta = () => {
   return (
+    <>
+    <Navbar />
     <div className="fazerproposta-container">
-      {/* Espaço reservado para Navbar */}
-
       <div className="fazerproposta-content">
         <Link to="/buscarprojetos" className="voltar">
           ← Voltar
@@ -35,6 +36,7 @@ const FazerProposta = () => {
 
       {/* Espaço reservado para o rodapé */}
     </div>
+    </>
   );
 };
 
