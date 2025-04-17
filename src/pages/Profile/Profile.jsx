@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import Navbar from '../../components/Navbar/Navbar'
+import Navbar from '../../components/navbar/Navbar.jsx';
 import SubNavbar from '../../components/SubNavbar/SubNavbar';
 import './Profile.css';
 
