@@ -23,13 +23,9 @@ const AppRoutes = () => {
       <Route path="/sobre" element={<About />} />
       <Route path="/servicos" element={<Services />} />
       <Route path="/cadastro" element={<RegisterPage />} />
-      <Route path="/" element={<Navigate to="/ProjectEdit" />} />
       <Route path="/editarprojeto" element={<ProjectEdit />} />
-      <Route path="/" element={<Navigate to="/Publish" />} />
       <Route path="/publicar" element={<Publish />} />
-      <Route path="/" element={<Navigate to="/Proposals" />} />
       <Route path="/propostas" element={<Proposals />} />
-      <Route path="/" element={<Navigate to="/MyProjects1" />} />
       <Route path="/meusprojetos" element={<MyProjects1 />} />
       <Route path="/buscarprojetos" element={<BuscarProjetos />} />
       <Route path="/fazerproposta" element={<FazerProposta />} />
