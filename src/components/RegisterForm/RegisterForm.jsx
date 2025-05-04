@@ -1,21 +1,18 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import styles from './RegisterForm.module.css';
 import { formatCpfCnpj, formatPhone, stripFormatting } from '../../utils/formatUtils';
-import { Link } from 'react-router-dom';
-import {
-  FaUser,
-  FaBuilding,
-  FaIdCard,
-  FaEnvelope,
-  FaPhone,
-  FaLock,
-} from 'react-icons/fa';
+import { FaUser, FaBuilding, FaIdCard, FaEnvelope, FaPhone, FaLock } from 'react-icons/fa';
+import axios from 'axios';
 
 const RegisterForm = ({ type }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     company: '',
     cpfCnpj: '',
     email: '',
@@ -24,6 +21,7 @@ const RegisterForm = ({ type }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   const validate = () => {
     const newErrors = {};
@@ -31,13 +29,12 @@ const RegisterForm = ({ type }) => {
     const phoneClean = stripFormatting(formData.phone);
 
     if (!formData.name) newErrors.name = 'Nome é obrigatório';
-    if (type === 'contratante' && !formData.company) newErrors.company = 'Nome da empresa é obrigatório';
-    if (!cpfCnpjClean || (cpfCnpjClean.length !== 11 && cpfCnpjClean.length !== 14))
-      newErrors.cpfCnpj = 'CPF ou CNPJ inválido';
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'E-mail inválido';
+    if (!formData.username) newErrors.username = 'Username é obrigatório';
+    if (type === 'contratante' && !formData.company) newErrors.company = 'Empresa é obrigatória';
+    if (!cpfCnpjClean || (cpfCnpjClean.length !== 11 && cpfCnpjClean.length !== 14)) newErrors.cpfCnpj = 'CPF/CNPJ inválido';
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email inválido';
     if (!phoneClean || phoneClean.length < 10) newErrors.phone = 'Telefone inválido';
-    if (!formData.password || formData.password.length < 6)
-      newErrors.password = 'Senha deve ter no mínimo 6 caracteres';
+    if (!formData.password || formData.password.length < 6) newErrors.password = 'Mínimo 6 caracteres';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -53,95 +50,45 @@ const RegisterForm = ({ type }) => {
     setFormData((prev) => ({ ...prev, [name]: newValue }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      const payload = {
-        ...formData,
-        cpfCnpj: stripFormatting(formData.cpfCnpj),
-        phone: stripFormatting(formData.phone),
-      };
+    if (!validate()) return;
 
-      console.log('Enviando para o back:', payload);
-      alert('Cadastro realizado com sucesso!');
+    const payload = {
+      name: formData.name,
+      username: formData.username,
+      cpf: stripFormatting(formData.cpfCnpj),
+      email: formData.email,
+      phone: stripFormatting(formData.phone),
+      password: formData.password,
+      role: type === 'freelancer' ? 'FREELANCER' : 'EMPLOYER',
+      ...(type === 'contratante' ? { companyName: formData.company } : {})
+    };
+
+    try {
+      await axios.post('/api/auth/register', payload);
+      setSuccessMessage('Cadastro realizado com sucesso! Redirecionando para o login...');
+      setTimeout(() => navigate('/login'), 3000);
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao cadastrar: ' + (err.response?.data || 'Erro inesperado.'));
     }
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <Input
-        label="Nome"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-        error={errors.name}
-        placeholder="Nome completo"
-        icon={FaUser}
-      />
+      {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
 
+      <Input label="Nome" name="name" value={formData.name} onChange={handleChange} error={errors.name} />
+      <Input label="Username público" name="username" value={formData.username} onChange={handleChange} error={errors.username} />
       {type === 'contratante' && (
-        <Input
-          label="Nome da Empresa"
-          name="company"
-          value={formData.company}
-          onChange={handleChange}
-          error={errors.company}
-          placeholder="Nome da empresa"
-          icon={FaBuilding}
-        />
+        <Input label="Nome da Empresa" name="company" value={formData.company} onChange={handleChange} error={errors.company} />
       )}
-
-      <Input
-        label="CPF ou CNPJ"
-        name="cpfCnpj"
-        value={formData.cpfCnpj}
-        onChange={handleChange}
-        error={errors.cpfCnpj}
-        maxLength={18}
-        placeholder="Digite seu CPF ou CNPJ"
-        icon={FaIdCard}
-      />
-
-      <Input
-        label="E-mail"
-        name="email"
-        type="email"
-        value={formData.email}
-        onChange={handleChange}
-        error={errors.email}
-        placeholder="Digite seu E-mail"
-        icon={FaEnvelope}
-      />
-
-      <Input
-        label="Telefone"
-        name="phone"
-        value={formData.phone}
-        onChange={handleChange}
-        error={errors.phone}
-        maxLength={15}
-        placeholder="Digite seu telefone"
-        icon={FaPhone}
-      />
-
-      <Input
-        label="Senha"
-        name="password"
-        type="password"
-        value={formData.password}
-        onChange={handleChange}
-        error={errors.password}
-        placeholder="Digite sua senha"
-        icon={FaLock}
-      />
-
-      <div className={styles.actions}>
-        <Button type="submit">Cadastrar</Button>
-      </div>
-
-      <div className={styles.loginMessage}>
-        Já possui uma conta? <Link to="/login">Faça o login</Link>
-      </div>
+      <Input label="CPF ou CNPJ" name="cpfCnpj" value={formData.cpfCnpj} onChange={handleChange} error={errors.cpfCnpj} />
+      <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} error={errors.email} />
+      <Input label="Telefone" name="phone" value={formData.phone} onChange={handleChange} error={errors.phone} />
+      <Input label="Senha" name="password" type="password" value={formData.password} onChange={handleChange} error={errors.password} />
+      <Button type="submit">Cadastrar</Button>
     </form>
   );
 };

@@ -20,6 +20,14 @@
   margin-bottom: 1rem;
 }
 
+.successMessage {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+
 
 
 @keyframes fadeIn {

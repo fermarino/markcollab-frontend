@@ -41,12 +41,11 @@ const RegisterPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.leftSide}>
-        {selectedType && (
+        {selectedType ? (
           <div className={styles.desktopBackButton}>
             <BackButton onClick={handleBack} />
           </div>
-        )}
-        {!selectedType && (
+        ) : (
           <RegisterSelector selectedType={selectedType} onSelect={setSelectedType} onBack={handleBack} />
         )}
       </div>
