@@ -10,7 +10,7 @@ const Proposals = () => {
         <div className="proposta-container"><Navbar />  
             <div className="proposta-content">
               
-            <a href="/projects" className="back-link">&larr; Voltar</a>
+            <a href="/meusprojetos" className="back-link">&larr; Voltar</a>
                 <div className="proposta-details">
                     <h3 className="proposta-project-title">Nome_do_projeto</h3>
                     <h4 className="proposta-section-title">Descrição do projeto</h4>

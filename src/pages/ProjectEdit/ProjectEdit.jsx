@@ -26,7 +26,7 @@ const ProjectEdit = () => {
     <>
       <Navbar/>
       <div className="project-edit-container">
-        <a href="/" className="back-link">&larr; Voltar</a>
+        <a href="/meusprojetos" className="back-link">&larr; Voltar</a>
         
         <h2 className="edit-title">Editar projeto</h2>
         <form className="edit-form" onSubmit={handleSubmit}>

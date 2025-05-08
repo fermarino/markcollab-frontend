@@ -37,10 +37,11 @@ const MyProjects1 = () => {
 
   return (
     <div>
-     <Navbar/>
+      <Navbar />
       <div className="container">
         <h1 className="titulo">Meus projetos</h1>
-        <button className="botao-criar"> + Criar novo projeto</button>
+        {/* Link para a página de publicar */}
+        <Link to="/publicar" className="botao-criar">+ Criar novo projeto</Link>
         <div className="projetos">
           {projetosMock.map((projeto) => (
             <div key={projeto.id} className="projeto-card">
@@ -64,7 +65,7 @@ const MyProjects1 = () => {
           ))}
         </div>
       </div>
-      
+
       {popupVisivel && <Popupcancelar onClose={fecharPopupCancelar} onConfirm={confirmarCancelamento} />}
     </div>
   );

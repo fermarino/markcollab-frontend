@@ -53,7 +53,7 @@ const Publish = () => {
     <>
       <Navbar />
       <div className="project-edit-container">
-        <a href="/projects" className="back-link">&larr; Voltar</a>
+        <a href="/meusprojetos" className="back-link">&larr; Voltar</a>
         <h2 className="edit-title">Publicar projeto</h2>
         <form className="edit-form" onSubmit={handleSubmit}>
           <label>Nome do projeto</label>

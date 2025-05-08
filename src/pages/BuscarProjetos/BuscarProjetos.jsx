@@ -37,7 +37,7 @@ function BuscarProjetos() {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
-            <button className="projeto-botao">Enviar proposta</button>
+            <button href="/fazerproposta" className="projeto-botao">Enviar proposta</button>
           </div>
         ))}
       </div>
