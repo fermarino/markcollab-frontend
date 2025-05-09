@@ -17,12 +17,18 @@ const LoginPage = () => {
     setError('');
     try {
       const response = await axios.post('/api/auth/login', { identifier, password });
-      const { token, role } = response.data;
+      console.log('Resposta completa:', response.data);
+      const { token, role, cpf } = response.data;
 
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
 
-      // redireciona para home ou dashboard
+      if (cpf) {
+        localStorage.setItem('cpf', cpf); // ✅ Armazena CPF somente se existir
+      } else {
+        console.warn('CPF não retornado no login. Verifique a resposta da API.');
+      }
+
       navigate('/meusprojetos');
     } catch (err) {
       setError('Credenciais inválidas. Tente novamente.');

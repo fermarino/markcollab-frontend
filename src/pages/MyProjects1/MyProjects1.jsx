@@ -1,22 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Popupcancelar from "../../components/CancelProject/CancelProject";
 import "./MyProjects1.css";
 import Navbar from '../../components/navbar/Navbar.jsx';
-
-const projetosMock = [
-  { id: 1, nome: "Nome_do_projeto", descricao: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor si.", status: "Concluído", cor: "#28a745" },
-  { id: 2, nome: "Nome_do_projeto", descricao: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor si.", status: "Andamento", cor: "#ffc107" },
-  { id: 3, nome: "Nome_do_projeto", descricao: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor si.", status: "Analisar proposta", cor: "#dc3545" },
-  { id: 4, nome: "Nome_do_projeto", descricao: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor si.", status: "Concluído", cor: "#28a745" },
-];
+import axios from "axios";
 
 const MyProjects1 = () => {
+  const [projetos, setProjetos] = useState([]);
   const [menuAberto, setMenuAberto] = useState(null);
   const [popupVisivel, setPopupVisivel] = useState(false);
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
 
+  const cpf = localStorage.getItem("cpf");
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!cpf || !token) {
+      alert("CPF ou token não encontrados. Faça login novamente.");
+      return;
+    }
+
+    const fetchProjetos = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/projects/employer/${cpf}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setProjetos(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar projetos:", error);
+        alert("Erro ao carregar os projetos.");
+      }
+    };
+
+    fetchProjetos();
+  }, [cpf, token]);
+
   const toggleMenu = (id) => {
+    // Se o menu do projeto for aberto, fechamos ele. Caso contrário, abrimos.
     setMenuAberto(menuAberto === id ? null : id);
   };
 
@@ -40,16 +62,15 @@ const MyProjects1 = () => {
       <Navbar />
       <div className="container">
         <h1 className="titulo">Meus projetos</h1>
-        {/* Link para a página de publicar */}
         <Link to="/publicar" className="botao-criar">+ Criar novo projeto</Link>
         <div className="projetos">
-          {projetosMock.map((projeto) => (
+          {projetos.map((projeto) => (
             <div key={projeto.id} className="projeto-card">
               <div className="projeto-info">
-                <h3>{projeto.nome}</h3>
-                <p>{projeto.descricao}</p>
+                <h3>{projeto.projectTitle}</h3>
+                <p>{projeto.projectDescription}</p>
               </div>
-              <div className="projeto-status" style={{ backgroundColor: projeto.cor }}>
+              <div className="projeto-status" style={{ backgroundColor: projeto.status === "Concluído" ? "#28a745" : projeto.status === "Em andamento" ? "#ffc107" : "#dc3545" }}>
                 {projeto.status}
               </div>
               <div className="menu-container">
