@@ -26,14 +26,23 @@ const Publish = () => {
 
     axios.post('http://localhost:8080/api/ia/gerar-descricao', projectData)
       .then(response => {
-        const descricaoGerada = response.data.descricao;
+        const descricaoGerada = response.data.descricao?.toString().trim();
+        if (!descricaoGerada) {
+          alert("A descrição gerada pela IA está vazia ou inválida.");
+          return;
+        }
+
+        // Atualiza apenas a descrição, preservando os outros campos
         setProject(prevState => ({
           ...prevState,
           description: descricaoGerada
         }));
+
+        console.log("Descrição gerada pela IA:", descricaoGerada);
       })
       .catch(error => {
         console.error("Erro ao chamar a IA:", error);
+        alert("Erro ao gerar descrição automática. Tente novamente.");
       });
   };
 
@@ -45,11 +54,20 @@ const Publish = () => {
 
     if (!employerCpf) {
       console.error('CPF do contratante não encontrado no localStorage');
+      alert("Erro: CPF do contratante não encontrado.");
       return;
     }
 
     if (!token) {
       console.error('Token de autenticação não encontrado');
+      alert("Erro: token de autenticação não encontrado.");
+      return;
+    }
+
+    // Validação do preço
+    const preco = parseFloat(project.projectPrice);
+    if (!project.projectPrice || isNaN(preco)) {
+      alert("Por favor, preencha um preço válido para o projeto.");
       return;
     }
 
@@ -58,7 +76,7 @@ const Publish = () => {
       projectDescription: project.description,
       projectSpecifications: project.specifications,
       deadline: project.deadline,
-      projectPrice: parseFloat(project.projectPrice),
+      projectPrice: preco,
       open: true,
       status: "Ativo"
     };
@@ -77,7 +95,6 @@ const Publish = () => {
       .then(response => {
         console.log("Projeto publicado:", response.data);
         alert("Projeto publicado com sucesso!");
-        // Opcional: limpar formulário após sucesso
         setProject({
           name: '',
           description: '',
@@ -90,6 +107,9 @@ const Publish = () => {
         console.error("Erro ao publicar o projeto:", error);
         if (error.response) {
           console.error("Detalhes do erro:", error.response.data);
+          alert("Erro ao publicar projeto: " + (error.response.data.message || "verifique os dados e tente novamente."));
+        } else {
+          alert("Erro ao publicar projeto. Tente novamente.");
         }
       });
   };
