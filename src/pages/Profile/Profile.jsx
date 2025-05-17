@@ -135,7 +135,7 @@ const Profile = () => {
             </div>
           </div>
           {!isEditing && (
-            <button className="edit-button" onClick={() => setIsEditing(true)}>
+            <button className="editProfile-button" onClick={() => setIsEditing(true)}>
               Editar perfil
             </button>
           )}

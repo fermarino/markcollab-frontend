@@ -68,7 +68,7 @@ const PersonalData = () => {
         <div className="header-actions">
           <h2>Dados pessoais</h2>
           {!isEditing && (
-            <button className="edit-button" onClick={() => setIsEditing(true)}>
+            <button className="editData-btn" onClick={() => setIsEditing(true)}>
               Editar dados
             </button>
           )}

@@ -20,10 +20,10 @@ const LoginPage = () => {
       const { token, role } = response.data;
 
       localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
+      localStorage.setItem('role', role.toLowerCase());
 
       // redireciona para home ou dashboard
-      navigate('/meusprojetos');
+      navigate('/');
     } catch (err) {
       setError('Credenciais inválidas. Tente novamente.');
     }
