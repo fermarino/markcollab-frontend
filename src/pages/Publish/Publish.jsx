@@ -8,15 +8,15 @@ const Publish = () => {
     name: '',
     description: '',
     specifications: '',
-    deadline: ''
+    deadline: '',
+    projectPrice: ''
   });
 
-  // Atualizar o estado dos campos do formulário
   const handleChange = (e) => {
     setProject({ ...project, [e.target.name]: e.target.value });
   };
 
-  // Função para chamar o backend que vai interagir com a IA
+  // Integração com a IA para gerar descrição automática
   const gerarDescricaoAutomatica = () => {
     const projectData = {
       name: project.name,
@@ -26,26 +26,91 @@ const Publish = () => {
 
     axios.post('http://localhost:8080/api/ia/gerar-descricao', projectData)
       .then(response => {
-        const descricaoGerada = response.data.descricao;
+        const descricaoGerada = response.data.descricao?.toString().trim();
+        if (!descricaoGerada) {
+          alert("A descrição gerada pela IA está vazia ou inválida.");
+          return;
+        }
+
+        // Atualiza apenas a descrição, preservando os outros campos
         setProject(prevState => ({
           ...prevState,
           description: descricaoGerada
         }));
+
+        console.log("Descrição gerada pela IA:", descricaoGerada);
       })
       .catch(error => {
         console.error("Erro ao chamar a IA:", error);
+        alert("Erro ao gerar descrição automática. Tente novamente.");
       });
   };
 
-  // Enviar dados do projeto para o backend
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/projects', project)
+
+    const employerCpf = localStorage.getItem('cpf');
+    const token = localStorage.getItem('token');
+
+    if (!employerCpf) {
+      console.error('CPF do contratante não encontrado no localStorage');
+      alert("Erro: CPF do contratante não encontrado.");
+      return;
+    }
+
+    if (!token) {
+      console.error('Token de autenticação não encontrado');
+      alert("Erro: token de autenticação não encontrado.");
+      return;
+    }
+
+    // Validação do preço
+    const preco = parseFloat(project.projectPrice);
+    if (!project.projectPrice || isNaN(preco)) {
+      alert("Por favor, preencha um preço válido para o projeto.");
+      return;
+    }
+
+    const body = {
+      projectTitle: project.name,
+      projectDescription: project.description,
+      projectSpecifications: project.specifications,
+      deadline: project.deadline,
+      projectPrice: preco,
+      open: true,
+      status: "Ativo"
+    };
+
+    console.log("Enviando projeto:", body);
+
+    axios.post(
+      `http://localhost:8080/api/projects/${employerCpf}`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
       .then(response => {
         console.log("Projeto publicado:", response.data);
+        alert("Projeto publicado com sucesso!");
+        setProject({
+          name: '',
+          description: '',
+          specifications: '',
+          deadline: '',
+          projectPrice: ''
+        });
       })
       .catch(error => {
         console.error("Erro ao publicar o projeto:", error);
+        if (error.response) {
+          console.error("Detalhes do erro:", error.response.data);
+          alert("Erro ao publicar projeto: " + (error.response.data.message || "verifique os dados e tente novamente."));
+        } else {
+          alert("Erro ao publicar projeto. Tente novamente.");
+        }
       });
   };
 
@@ -85,6 +150,16 @@ const Publish = () => {
             required
           />
 
+          <label>Preço</label>
+          <input
+            type="number"
+            name="projectPrice"
+            className="input-field bordered"
+            value={project.projectPrice}
+            onChange={handleChange}
+            required
+          />
+
           <label>Descrição do projeto</label>
           <textarea
             name="description"
@@ -109,4 +184,4 @@ const Publish = () => {
   );
 };
 
-export default Publish;
+export default Publish;
