@@ -65,7 +65,7 @@
 .campo textarea {
     width: 110%;
     height: 50px;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #5a5959;
     border-radius: 8px;
     padding: 10px;
     font-size: 16px;
@@ -94,6 +94,7 @@
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-align: center;
 }
 
 .btn-enviar:hover {

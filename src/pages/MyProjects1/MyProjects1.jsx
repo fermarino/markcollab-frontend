@@ -70,14 +70,32 @@ const MyProjects1 = () => {
                 <h3>{projeto.projectTitle}</h3>
                 <p>{projeto.projectDescription}</p>
               </div>
-              <div className="projeto-status" style={{ backgroundColor: projeto.status === "Concluído" ? "#28a745" : projeto.status === "Em andamento" ? "#ffc107" : "#dc3545" }}>
-                {projeto.status}
-              </div>
+             <div className="status-e-botao">
+  <div
+    className="projeto-status"
+    style={{
+      backgroundColor:
+        projeto.status === "Concluído"
+          ? "#28a745"
+          : projeto.status === "Em andamento"
+          ? "#ffc107"
+          : "#dc3545",
+    }}
+  >
+    {projeto.status}
+  </div>
+  {projeto.status === "Aberto" && (
+    <Link to="/propostas" className="ver-propostas-btn">
+      Ver propostas
+    </Link>
+  )}
+</div>
+
               <div className="menu-container">
                 <button className="menu-button" onClick={() => toggleMenu(projeto.id)}>⋮</button>
                 {menuAberto === projeto.id && (
                   <div className="menu-opcoes">
-                    <Link to={`/editar/${projeto.id}`} className="menu-item">Editar projeto</Link>
+                    <Link to="/editarprojeto" className="menu-item">Editar projeto</Link>
                     <button className="menu-item" onClick={() => abrirPopupCancelar(projeto.id)}>Cancelar projeto</button>
                   </div>
                 )}

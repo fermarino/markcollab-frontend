@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./FazerProposta.css";
-import Navbar from '../../components/Navbar/Navbar'
+import Navbar from '../../components/navbar/Navbar'
 
 const FazerProposta = () => {
   return (

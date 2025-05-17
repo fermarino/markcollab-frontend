@@ -23,6 +23,7 @@ const RegisterPage = () => {
 
   if (isMobile) {
     return (
+      
       <div className={styles.mobileContainer}>
         {selectedType ? (
           <>
@@ -39,6 +40,7 @@ const RegisterPage = () => {
   }
 
   return (
+    
     <div className={styles.container}>
       <div className={styles.leftSide}>
         {selectedType ? (

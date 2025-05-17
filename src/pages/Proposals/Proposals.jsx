@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Proposals.css';
 import Navbar from '../../components/navbar/Navbar.jsx';
+import { Link } from 'react-router-dom';
 
 const Proposals = () => {
     const [deadline, setDeadline] = useState('');
@@ -27,6 +28,11 @@ const Proposals = () => {
                     <p className="proposta-prazo">
                      17/05/2025
                     </p>
+                    <h4 className="proposta-section-title">Preço</h4>
+<p className="proposta-preco">
+  R$ 1.500,00
+</p>
+
                 </div>
 
                 <div className="proposta-proposals">
@@ -38,7 +44,7 @@ const Proposals = () => {
                             <div className="proposta-buttons">
                                 <button className="proposta-button proposta-accept">Aceitar proposta</button>
                                 <button className="proposta-button proposta-reject">Recusar proposta</button>
-                                <button className="proposta-button proposta-profile">Ver perfil</button>
+                               <Link to="/perfilfreelancer" className="ver-propostas-btn">Ver perfil</Link>
                             </div>
                         </div>
                     ))}

@@ -11,6 +11,7 @@
     margin: auto;
     padding: 20px;
     background: white;
+ 
 }
 
 .proposta-title {
@@ -90,7 +91,7 @@
 .proposta-proposals {
     margin-top: 15px;
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #747373;
     border-radius: 10px;
     background: rgb(255, 255, 255);
 }
@@ -101,6 +102,7 @@
     border-radius: 10px;
     margin-top: 10px;
     background: #fff; 
+    border: 1px solid #747373;
 }
 
 .proposta-freelancer-name {
@@ -182,3 +184,15 @@
     margin-top: 20px;
     margin-bottom: 30px;
 }
+.proposta-preco {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #f1f1f100;
+    margin-top: 30px;
+    font-size: 12px;
+    text-align: left;
+    margin-bottom: 70px;
+    padding-left: 20px;
+}
+
