@@ -16,10 +16,11 @@ const Navbar = () => {
   if (isLoggedIn === null) return null;
 
   const getMeusProjetosPath = () => {
-  if (role === 'freelancer') return '/meusprojetosf';
-  if (role === 'employer') return '/meusprojetos';
+  if (userRole === 'freelancer') return '/meusprojetosf';
+  if (userRole === 'employer') return '/meusprojetos';
   return '/';
 };
+
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
