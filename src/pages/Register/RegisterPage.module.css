@@ -6,6 +6,7 @@
 }
 
 .leftSide {
+  color: white;
   flex: 1;
   background-color: #007aff;
   display: flex;
@@ -41,6 +42,7 @@
   align-self: flex-start;
   color: #1e5bf5;
 }
+
 
 
 @media (max-width: 950px) {

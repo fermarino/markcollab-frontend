@@ -41,11 +41,13 @@
   display: block;
 }
 
+
 h2 {
   text-align: center;
   font-weight: bold;
-  color: #333;
+  color: #000000;
 }
+
 
 .forgot {
   font-size: 0.85rem;
@@ -65,4 +67,5 @@ h2 {
   text-align: center;
   font-size: 0.85rem;
   margin-top: 1rem;
+  color: #555;
 }

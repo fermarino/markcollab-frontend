@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../../components/navbar/Navbar.jsx';
+import Navbar from '../../components/navbar/Navbar';
 import SubNavbar from '../../components/SubNavbar/SubNavbar';
 import './PersonalData.css';
 
 const PersonalData = () => {
-  const [userData, setUserData] = useState(null);
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [isEmployer, setIsEmployer] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await fetch('/api/user/me', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      try {
+        const response = await fetch('/api/user/me', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
 
-      const data = await response.json();
-      setUserData(data);
-      setFormData(data); // Preenche os dados para edição
-      setIsEmployer(data.role === 'employer');
+        if (!response.ok) {
+          console.error('Erro ao buscar dados do usuário:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+        setFormData(data);
+        setIsEmployer(data.role === 'EMPLOYER');
+      } catch (error) {
+        console.error('Erro ao buscar usuário:', error);
+      }
     };
 
     fetchUserData();
@@ -33,7 +40,7 @@ const PersonalData = () => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch('/api/user/update', {
+      const response = await fetch('/api/user/me/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -43,10 +50,10 @@ const PersonalData = () => {
       });
 
       if (response.ok) {
-        setUserData(formData);
         setIsEditing(false);
         alert('Dados atualizados com sucesso!');
       } else {
+        console.error('Erro ao atualizar os dados:', response.status);
         alert('Erro ao atualizar os dados.');
       }
     } catch (error) {
@@ -56,7 +63,6 @@ const PersonalData = () => {
   };
 
   const handleCancel = () => {
-    setFormData(userData); 
     setIsEditing(false);
   };
 
@@ -65,76 +71,101 @@ const PersonalData = () => {
       <Navbar />
       <SubNavbar />
       <div className="personal-data-container">
-        <div className="header-actions">
-          <h2>Dados pessoais</h2>
-          {!isEditing && (
-            <button className="editData-btn" onClick={() => setIsEditing(true)}>
-              Editar dados
-            </button>
-          )}
-        </div>
-
-        <form className='profile_form'>
-          
-          <label className='personal_label'>Nome</label>
+        <h2>Editar Dados</h2>
+        <form className="profile_form">
+          <label className="profile_label">Nome completo</label>
           <input
             type="text"
             name="name"
-            value={formData?.name || ''}
+            value={formData.name || ''}
             onChange={handleChange}
             disabled={!isEditing}
-            className='personal_input'
+            className="personal_input"
           />
 
-          <label className='personal_label'>Email</label>
+          <label className="profile_label">Nome de usuário</label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username || ''}
+            onChange={handleChange}
+            disabled={!isEditing}
+            className="personal_input"
+          />
+
+          <label className="profile_label">Email</label>
           <input
             type="email"
             name="email"
-            value={formData?.email || ''}
+            value={formData.email || ''}
             onChange={handleChange}
             disabled={!isEditing}
-            className='personal_input'
+            className="personal_input"
           />
 
-          <label className='personal_label'>CPF</label>
+          <label className="profile_label">CPF</label>
           <input
             type="text"
             name="cpf"
-            value={formData?.cpf || ''}
+            value={formData.cpf || ''}
             onChange={handleChange}
-            disabled={!isEditing}
-            className='personal_input'
+            disabled
+            className="personal_input"
           />
 
-          {isEmployer && (
+          <label className="profile_label">
+            {isEmployer ? 'Sobre a empresa' : 'Sobre mim'}
+          </label>
+          <input
+            type="text"
+            name="aboutMe"
+            value={formData.aboutMe || ''}
+            onChange={handleChange}
+            disabled={!isEditing}
+            className="personal_input"
+          />
+
+          {!isEmployer && (
             <>
-              <label className='personal_label'>Nome da empresa</label>
+              <label className="profile_label">Minha experiência</label>
               <input
                 type="text"
-                name="companyName"
-                value={formData?.companyName || ''}
+                name="experience"
+                value={formData.experience || ''}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className='personal_input'
+                className="personal_input"
               />
             </>
           )}
 
-          <label className='personal_label'>Senha</label>
-          <input
-            type="password"
-            name="password"
-            placeholder={isEditing ? 'Digite nova senha' : ''}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className='personal_input'
-          />
+          {isEmployer && (
+            <>
+              <label className="profile_label">Nome da empresa</label>
+              <input
+                type="text"
+                name="companyName"
+                value={formData.companyName || ''}
+                onChange={handleChange}
+                disabled={!isEditing}
+                className="personal_input"
+              />
+            </>
+          )}
 
-          {isEditing && (
+          {isEditing ? (
             <div className="form-buttons">
               <button type="button" onClick={handleSave}>Salvar</button>
               <button type="button" onClick={handleCancel}>Cancelar</button>
             </div>
+          ) : (
+            <button
+              type="button"
+              className="editData-btn"
+              onClick={() => setIsEditing(true)}
+            >
+              Editar
+            </button>
           )}
         </form>
       </div>

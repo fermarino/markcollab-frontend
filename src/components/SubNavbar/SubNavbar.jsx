@@ -1,18 +1,16 @@
-// SubNavbar.jsx
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaIdCard, FaSignOutAlt } from 'react-icons/fa';
 import './SubNavbar.css';
+import { AuthContext } from '../../context/AuthContext'; 
 
 const SubNavbar = () => {
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext); 
 
   const handleLogout = () => {
-    
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-
-    navigate('/login');
+    logout(); 
+    navigate('/login'); 
   };
 
   return (

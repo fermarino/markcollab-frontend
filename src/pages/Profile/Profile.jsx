@@ -10,20 +10,27 @@ const Profile = () => {
   const [isEmployer, setIsEmployer] = useState(false);
   const fileInputRef = useRef(null);
 
-
-
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await fetch('/api/user/me', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      try {
+        const response = await fetch('/api/user/me', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
 
-      const data = await response.json();
-      setUserData(data);
-      setFormData(data);
-      setIsEmployer(data.role === 'employer');
+        if (!response.ok) {
+          console.error('Erro ao buscar dados do usuário:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+        setUserData(data);
+        setFormData(data);
+        setIsEmployer(data.role === 'EMPLOYER');
+      } catch (error) {
+        console.error('Erro ao buscar usuário:', error);
+      }
     };
 
     fetchUserData();
@@ -36,7 +43,7 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch('/api/user/update', {
+      const response = await fetch('/api/user/me/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -50,6 +57,7 @@ const Profile = () => {
         setIsEditing(false);
         alert('Dados atualizados com sucesso!');
       } else {
+        console.error('Erro ao atualizar os dados:', response.status);
         alert('Erro ao atualizar os dados.');
       }
     } catch (error) {
@@ -63,14 +71,13 @@ const Profile = () => {
     setIsEditing(false);
   };
 
-  
   const handleUploadPhoto = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     const formDataImg = new FormData();
     formDataImg.append('profilePicture', file);
-  
+
     try {
       const response = await fetch('/api/user/upload-profile-picture', {
         method: 'POST',
@@ -79,7 +86,7 @@ const Profile = () => {
         },
         body: formDataImg,
       });
-  
+
       if (response.ok) {
         const updatedUser = await response.json();
         setUserData(updatedUser);
@@ -93,7 +100,6 @@ const Profile = () => {
       alert('Erro ao enviar a foto.');
     }
   };
-  
 
   return (
     <>
@@ -105,35 +111,33 @@ const Profile = () => {
           <div className="profile-info">
             <div>
               <div className="profile-picture">
-                {/* Placeholder: substitua pela imagem do banco futuramente */}
                 <img
                   src={userData?.profilePicture || '/default-avatar.png'}
                   alt="Foto de perfil"
                 />
-              
               </div>
 
               {isEditing && (
-                  <>
-                    <button className='btnPhoto' type="button" onClick={() => fileInputRef.current.click()}>
-                      Editar foto
-                    </button>
-
-                    <input className='profile_input'
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      onChange={handleUploadPhoto}
-                      style={{ display: 'none' }}
-                    />
-                  </>
-                )}
+                <>
+                  <button className="btnPhoto" type="button" onClick={() => fileInputRef.current.click()}>
+                    Editar foto
+                  </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleUploadPhoto}
+                    style={{ display: 'none' }}
+                  />
+                </>
+              )}
             </div>
-           
+
             <div className="profile-name">
-              <h3>{userData?.username}</h3>
+              <h3>{userData?.name}</h3>
             </div>
           </div>
+
           {!isEditing && (
             <button className="editProfile-button" onClick={() => setIsEditing(true)}>
               Editar perfil
@@ -141,51 +145,48 @@ const Profile = () => {
           )}
         </div>
 
-        <form className='profile_form'>
-          <label className='profile_label'>Usuário</label>
+        <form className="profile_form">
+          <label className="profile_label">Usuário</label>
           <input
             type="text"
             name="username"
             value={formData?.username || ''}
             onChange={handleChange}
             disabled={!isEditing}
-            className='profile_input'
+            className="profile_input"
           />
 
           {!isEmployer && (
             <>
-              <label className='profile_label'>Sobre mim</label>
-                <input
-                  type="text"
-                  name="about"
-                  value={formData?.about || ''}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  className='aboutInput'
-                />
-
-              <label className='profile_label'>Minha experiência profissional</label>
-              <input
-                type="text"
-                name="resume"
-                value={formData?.resume || ''}
+              <label className="profile_label">Sobre mim</label>
+              <textarea
+                name="aboutMe"
+                value={formData?.aboutMe || ''}
                 onChange={handleChange}
                 disabled={!isEditing}
-                 className='aboutInput'
+                className="aboutInput"
+              />
+
+              <label className="profile_label">Minha experiência profissional</label>
+              <textarea
+                name="experience"
+                value={formData?.experience || ''}
+                onChange={handleChange}
+                disabled={!isEditing}
+                className="aboutInput"
               />
             </>
           )}
 
           {isEmployer && (
             <>
-              <label className='profile_label'>Sobre a empresa</label>
-              <input
-                type="text"
-                name="aboutCompany"
-                value={formData?.aboutCompany || ''}
+              <label className="profile_label">Sobre a empresa</label>
+              <textarea
+                name="aboutMe"
+                value={formData?.aboutMe || ''}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className='aboutInput'
+                className="aboutInput"
               />
             </>
           )}

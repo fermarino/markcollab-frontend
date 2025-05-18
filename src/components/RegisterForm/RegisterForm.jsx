@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import styles from './RegisterForm.module.css';
-import { formatCpfCnpj, formatPhone, stripFormatting } from '../../utils/formatUtils';
-import { FaUser, FaBuilding, FaIdCard, FaEnvelope, FaPhone, FaLock } from 'react-icons/fa';
+import { formatCpfCnpj, stripFormatting } from '../../utils/formatUtils';
 import axios from 'axios';
 
 const RegisterForm = ({ type }) => {
@@ -16,7 +15,6 @@ const RegisterForm = ({ type }) => {
     company: '',
     cpfCnpj: '',
     email: '',
-    phone: '',
     password: '',
   });
 
@@ -26,14 +24,12 @@ const RegisterForm = ({ type }) => {
   const validate = () => {
     const newErrors = {};
     const cpfCnpjClean = stripFormatting(formData.cpfCnpj);
-    const phoneClean = stripFormatting(formData.phone);
 
     if (!formData.name) newErrors.name = 'Nome é obrigatório';
     if (!formData.username) newErrors.username = 'Username é obrigatório';
     if (type === 'contratante' && !formData.company) newErrors.company = 'Empresa é obrigatória';
     if (!cpfCnpjClean || (cpfCnpjClean.length !== 11 && cpfCnpjClean.length !== 14)) newErrors.cpfCnpj = 'CPF/CNPJ inválido';
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email inválido';
-    if (!phoneClean || phoneClean.length < 10) newErrors.phone = 'Telefone inválido';
     if (!formData.password || formData.password.length < 6) newErrors.password = 'Mínimo 6 caracteres';
 
     setErrors(newErrors);
@@ -43,9 +39,7 @@ const RegisterForm = ({ type }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     let newValue = value;
-
     if (name === 'cpfCnpj') newValue = formatCpfCnpj(value);
-    if (name === 'phone') newValue = formatPhone(value);
 
     setFormData((prev) => ({ ...prev, [name]: newValue }));
   };
@@ -59,7 +53,6 @@ const RegisterForm = ({ type }) => {
       username: formData.username,
       cpf: stripFormatting(formData.cpfCnpj),
       email: formData.email,
-      phone: stripFormatting(formData.phone),
       password: formData.password,
       role: type === 'freelancer' ? 'FREELANCER' : 'EMPLOYER',
       ...(type === 'contratante' ? { companyName: formData.company } : {})
@@ -86,7 +79,6 @@ const RegisterForm = ({ type }) => {
       )}
       <Input label="CPF ou CNPJ" name="cpfCnpj" value={formData.cpfCnpj} onChange={handleChange} error={errors.cpfCnpj} />
       <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} error={errors.email} />
-      <Input label="Telefone" name="phone" value={formData.phone} onChange={handleChange} error={errors.phone} />
       <Input label="Senha" name="password" type="password" value={formData.password} onChange={handleChange} error={errors.password} />
       <Button type="submit">Cadastrar</Button>
     </form>

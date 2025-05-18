@@ -1,31 +1,42 @@
-import React, { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [role, setRole] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const storedRole = localStorage.getItem('role');
+    const roleFromStorage = localStorage.getItem('role');
 
-    if (token && storedRole) {
+    if (token && roleFromStorage) {
       setIsLoggedIn(true);
-      setRole(storedRole.toLowerCase());
+      setRole(roleFromStorage);
     } else {
       setIsLoggedIn(false);
       setRole(null);
     }
-
-    setIsLoading(false);
   }, []);
 
+  const login = (token, role) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', role.toLowerCase());
+    setIsLoggedIn(true);
+    setRole(role.toLowerCase());
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('cpf');
+    setIsLoggedIn(false);
+    setRole(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, role, setIsLoggedIn, setRole }}>
+    <AuthContext.Provider value={{ isLoggedIn, role, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
