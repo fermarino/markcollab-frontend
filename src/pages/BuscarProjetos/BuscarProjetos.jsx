@@ -2,6 +2,8 @@ import React from "react";
 import "./BuscarProjetos.css";
 import { FaSearch } from "react-icons/fa";
 import Navbar from '../../components/navbar/Navbar.jsx';
+import { Link } from "react-router-dom";
+
 
 function BuscarProjetos() {
   return (
@@ -37,7 +39,11 @@ function BuscarProjetos() {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
-            <button href="/fazerproposta" className="projeto-botao">Enviar proposta</button>
+            <div className="botoes-projeto">
+  <Link to="/fazerproposta" className="ver-propostas-btn">Enviar proposta</Link>
+  <Link to="/perfilfreelancer" className="ver-propostas-btn">Ver perfil</Link>
+</div>
+
           </div>
         ))}
       </div>
