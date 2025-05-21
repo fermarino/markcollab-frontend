@@ -53,12 +53,14 @@
     margin: 0;
     margin-bottom: 10px;
     text-align: left;
+    color: black;
 }
 
 .projeto-info p {
     font-size: 14px;
     color: #555;
     text-align: left;
+    color: black;
 }
 
 .projetos-status {
