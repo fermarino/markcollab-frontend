@@ -46,12 +46,14 @@
     font-weight: bold;
     margin-top: 60px;
     margin-bottom: 60px;
+    color: black;
 }
 
 .proposta-section-title {
     font-size: 16px;
     font-weight:600;
     margin-top: 50px;
+    color: black;
     
 }
 
@@ -64,6 +66,7 @@
     font-size: 12px;
     text-align: left;
     padding-left: 20px;
+    color: black;
     
 }
 .proposta-prazo {
@@ -76,6 +79,7 @@
     text-align: left;
     margin-bottom: 70px;
     padding-left: 20px;
+    color: black;
 
 
 }
@@ -86,6 +90,7 @@
     border: 1px solid #ccc;
     border-radius: 10px;
     margin-top: 30px;
+    color: black;
 }
 
 .proposta-proposals {
@@ -94,6 +99,7 @@
     border: 1px solid #747373;
     border-radius: 10px;
     background: rgb(255, 255, 255);
+    color: black;
 }
 
 .proposta-box {
@@ -103,6 +109,7 @@
     margin-top: 10px;
     background: #fff; 
     border: 1px solid #747373;
+    
 }
 
 .proposta-freelancer-name {
@@ -194,5 +201,6 @@
     text-align: left;
     margin-bottom: 70px;
     padding-left: 20px;
+    color: black;
 }
 

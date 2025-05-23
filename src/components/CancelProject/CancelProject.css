@@ -40,6 +40,7 @@
   .popup-header-title {
     font-size: 18px;
     font-weight: normal; /* Removido o negrito */
+    color: white;
   }
   
   .popup-body {
@@ -50,6 +51,7 @@
   .popup-message {
     font-size: 16px;
     margin-bottom: 20px;
+    color: black;
   }
   
   .popup-footer {

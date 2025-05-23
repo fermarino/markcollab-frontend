@@ -57,6 +57,7 @@
 
   .projeto-info {
     width: 100%;
+    color: #000;
     
     
   }
@@ -154,7 +155,7 @@
     background: none;
     width: 100%;
     text-decoration: none;
-    color: inherit;
+    color: black;
     font-family: poppins;
     box-sizing: border-box;
     
