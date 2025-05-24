@@ -1,88 +1,167 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
-import styles from './RegisterForm.module.css';
+import SuccessMessage from '../SuccessMessage/SuccessMessage';
+import useRegisterValidation from '../../hooks/useRegisterValidation';
 import { formatCpfCnpj, stripFormatting } from '../../utils/formatUtils';
-import axios from 'axios';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import styles from './RegisterForm.module.css';
 
-const RegisterForm = ({ type }) => {
-  const navigate = useNavigate();
+const API_BASE = 'http://localhost:8080/api/auth/register';
 
-  const [formData, setFormData] = useState({
-    name: '',
-    username: '',
-    company: '',
-    cpfCnpj: '',
-    email: '',
-    password: '',
+export default function RegisterForm({ type }) {
+  const validate = useRegisterValidation(type);
+  const [formData, setFormData]         = useState({
+    name:'', username:'', company:'', cpfCnpj:'', email:'', password:''
   });
+  const [clientErrors, setClientErrors] = useState({});
+  const [serverError, setServerError]   = useState(null);
+  const [submitting, setSubmitting]     = useState(false);
+  const [success, setSuccess]           = useState(false);
+  const [showPwd, setShowPwd]           = useState(false);
 
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState('');
-
-  const validate = () => {
-    const newErrors = {};
-    const cpfCnpjClean = stripFormatting(formData.cpfCnpj);
-
-    if (!formData.name) newErrors.name = 'Nome é obrigatório';
-    if (!formData.username) newErrors.username = 'Username é obrigatório';
-    if (type === 'contratante' && !formData.company) newErrors.company = 'Empresa é obrigatória';
-    if (!cpfCnpjClean || (cpfCnpjClean.length !== 11 && cpfCnpjClean.length !== 14)) newErrors.cpfCnpj = 'CPF/CNPJ inválido';
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email inválido';
-    if (!formData.password || formData.password.length < 6) newErrors.password = 'Mínimo 6 caracteres';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleChange = ({ target:{name,value} }) => {
+    if (name==='cpfCnpj') {
+      const digits = stripFormatting(value).slice(0,14);
+      setFormData(fd => ({ ...fd, cpfCnpj: formatCpfCnpj(digits) }));
+    } else {
+      setFormData(fd => ({ ...fd, [name]: value }));
+    }
+    setClientErrors(ce => ({ ...ce, [name]: '' }));
+    setServerError(null);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    let newValue = value;
-    if (name === 'cpfCnpj') newValue = formatCpfCnpj(value);
+  const handleSubmit = async ev => {
+    ev.preventDefault();
+    setServerError(null);
 
-    setFormData((prev) => ({ ...prev, [name]: newValue }));
-  };
+    const frontErr = validate(formData);
+    if (Object.keys(frontErr).length) {
+      setClientErrors(frontErr);
+      return;
+    }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+    setSubmitting(true);
+    setClientErrors({});
 
     const payload = {
-      name: formData.name,
-      username: formData.username,
-      cpf: stripFormatting(formData.cpfCnpj),
-      email: formData.email,
+      name:     formData.name.trim(),
+      username: formData.username.trim(),
+      cpf:      stripFormatting(formData.cpfCnpj),
+      email:    formData.email.trim(),
       password: formData.password,
-      role: type === 'freelancer' ? 'FREELANCER' : 'EMPLOYER',
-      ...(type === 'contratante' ? { companyName: formData.company } : {})
+      role:     type==='freelancer' ? 'FREELANCER' : 'EMPLOYER',
+      ...(type==='contratante' && { companyName: formData.company.trim() })
     };
 
     try {
-      await axios.post('/api/auth/register', payload);
-      setSuccessMessage('Cadastro realizado com sucesso! Redirecionando para o login...');
-      setTimeout(() => navigate('/login'), 3000);
+      await axios.post(API_BASE, payload);
+      setSuccess(true);
     } catch (err) {
-      console.error(err);
-      alert('Erro ao cadastrar: ' + (err.response?.data || 'Erro inesperado.'));
+      const resp = err.response;
+      let msg = 'Não foi possível conectar ao servidor.';
+      if (resp?.data) {
+        if (resp.data.message) msg = resp.data.message;
+        else if (typeof resp.data === 'string') msg = resp.data;
+      }
+      if (resp?.status === 400) {
+        if (msg.includes('username:') || msg.includes('cpf:') || msg.includes('email:')) {
+          const top = msg.split(';').map(p=>p.split(':')[1].trim()).join('; ');
+          setServerError(top);
+        } else {
+          const fe = {};
+          msg.split(';').forEach(pair=>{
+            const [f,m] = pair.split(':').map(s=>s.trim());
+            if (['name','username','company','cpf','email','password'].includes(f)) {
+              fe[f==='cpf'?'cpfCnpj':f] = m;
+            }
+          });
+          setClientErrors(fe);
+        }
+      } else {
+        setServerError(msg);
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  return (
-    <form className={styles.form} onSubmit={handleSubmit}>
-      {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
+  if (success) {
+    return (
+      <SuccessMessage
+        title="Conta criada com sucesso!"
+        text="Sua conta foi criada."
+        linkText="Clique aqui para entrar."
+        linkTo="/login"
+      />
+    );
+  }
 
-      <Input label="Nome" name="name" value={formData.name} onChange={handleChange} error={errors.name} />
-      <Input label="Username público" name="username" value={formData.username} onChange={handleChange} error={errors.username} />
-      {type === 'contratante' && (
-        <Input label="Nome da Empresa" name="company" value={formData.company} onChange={handleChange} error={errors.company} />
+  return (
+    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+      {serverError && (
+        <div className={styles.serverError}>{serverError}</div>
       )}
-      <Input label="CPF ou CNPJ" name="cpfCnpj" value={formData.cpfCnpj} onChange={handleChange} error={errors.cpfCnpj} />
-      <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} error={errors.email} />
-      <Input label="Senha" name="password" type="password" value={formData.password} onChange={handleChange} error={errors.password} />
-      <Button type="submit">Cadastrar</Button>
+
+      <Input
+        label="Nome"
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        error={clientErrors.name}
+      />
+
+      <Input
+        label="Username público"
+        name="username"
+        value={formData.username}
+        onChange={handleChange}
+        error={clientErrors.username}
+      />
+
+      {type==='contratante' && (
+        <Input
+          label="Nome da Empresa"
+          name="company"
+          value={formData.company}
+          onChange={handleChange}
+          error={clientErrors.company}
+        />
+      )}
+
+      <Input
+        label="CPF ou CNPJ"
+        name="cpfCnpj"
+        value={formData.cpfCnpj}
+        onChange={handleChange}
+        error={clientErrors.cpfCnpj}
+      />
+
+      <Input
+        label="Email"
+        name="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        error={clientErrors.email}
+      />
+
+      <Input
+        label="Senha"
+        name="password"
+        type={showPwd ? 'text' : 'password'}
+        value={formData.password}
+        onChange={handleChange}
+        error={clientErrors.password}
+        icon={showPwd ? FaEyeSlash : FaEye}
+        onIconClick={() => setShowPwd(v=>!v)}
+      />
+
+      <Button type="submit" disabled={submitting}>
+        {submitting ? 'Enviando...' : 'Cadastrar'}
+      </Button>
     </form>
   );
-};
-
-export default RegisterForm;
+}

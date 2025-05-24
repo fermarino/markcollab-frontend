@@ -1,69 +1,188 @@
-.container {
+/* src/pages/RegisterPage/RegisterPage.module.css */
+
+/* === DESKTOP === */
+.page {
   display: flex;
-  min-height: 100vh;
-  width: 100%;
-  font-family: 'Inter', sans-serif;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px); /* ajuste conforme seu navbar */
+  background-color: #ffffff;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
+.card {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 700px;
+  border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* coluna azul */
 .leftSide {
-  color: white;
+  position: relative;
   flex: 1;
   background-color: #007aff;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+/* Botão voltar — **desktop** sempre branco */
+.backButton {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: transparent;
+  border: none;
+  color: #ffffff;     /* branco no desktop */
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+}
+.backButton:hover {
+  opacity: 0.8;
+}
+
+.blueInner {
+  text-align: center;
+}
+.blueInner h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff !important;
+}
+.blueInner ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.blueInner li {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  transition: all 0.5s ease;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+.checkIcon {
+  font-size: 1.2rem;
+  color: #ffffff;
 }
 
+/* coluna branca */
 .rightSide {
   flex: 1;
+  background-color: #ffffff;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  animation: fadeIn 0.5s ease forwards;
-  background-color: white;
+  justify-content: center;
+  padding: 2rem;
+  transition: opacity 0.4s ease-out;
 }
 
-.mobileContainer {
-  display: none;
-  background-color: white;
+.fadeIn {
+  animation: fadeIn 0.4s ease-out;
 }
 
-.desktopBackButton {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 2;
+.loginLink {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+.loginLink a {
+  color: #007aff;
+  text-decoration: none;
+}
+.loginLink a:hover {
+  text-decoration: underline;
 }
 
-.mobileBackButton {
-  padding: 16px;
-  align-self: flex-start;
-  color: #1e5bf5;
-}
-
-
-
-@media (max-width: 950px) {
-  .container {
+/* === MOBILE === */
+@media (max-width: 768px) {
+  /* esconde desktop */
+  .page {
+    position: relative;
+    padding: 0;
+    background: none;
+  }
+  .card {
     display: none;
   }
 
-  .mobileContainer {
+  /* tela de seleção azul */
+  .mobileBlue {
+    position: absolute;
+    top: 120px;    /* ajuste conforme navbar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #007aff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .mobileBlue::-webkit-scrollbar { display: none; }
+
+  /* tela de formulário branca */
+  .mobileForm {
+    position: absolute;
+    top: 120px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ffffff;
+    padding: 2rem 1rem;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    align-items: center;
+    overflow-y: auto;
+  }
+
+  /* no mobile, BackButton fica preto */
+  .mobileForm .backButton {
+    align-self: flex-start;
+    margin-bottom: 1rem;
+    color: #111827;  /* texto preto no form mobile */
+  }
+
+  /* botão Cadastrar no mobile */
+  .mobileForm button[type="submit"] {
+    margin-top: 1.5rem;
+    padding: 0.75rem 2rem;
+    background-color: #007aff;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
     width: 100%;
+    max-width: 360px;
+  }
+  .mobileForm button[type="submit"]:hover {
+    opacity: 0.9;
   }
 }
 
+/* animação de fadeIn */
 @keyframes fadeIn {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(16px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
