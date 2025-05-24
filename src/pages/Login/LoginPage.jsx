@@ -1,78 +1,109 @@
-import { useContext, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { FaEnvelope, FaLock } from 'react-icons/fa';
+import Navbar from '../../components/navbar/Navbar';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
-import styles from './LoginPage.module.css';
-import Navbar from '../../components/navbar/Navbar';
+import SuccessMessage from '../../components/SuccessMessage/SuccessMessage';
 import { AuthContext } from '../../context/AuthContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import styles from './LoginPage.module.css';
 
-const LoginPage = () => {
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const handleLogin = async (e) => {
+  const [identifier, setIdentifier] = useState('');
+  const [password,   setPassword]   = useState('');
+  const [showPwd,    setShowPwd]    = useState(false);
+  const [error,      setError]      = useState('');
+  const [loading,    setLoading]    = useState(false);
+  const [success,    setSuccess]    = useState(false);
+
+  async function handleSubmit(e) {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', { identifier, password });
-      const { token, role, cpf } = response.data;
-
+      const res = await axios.post('/api/auth/login', { identifier, password });
+      const { token, role, cpf } = res.data;
       login(token, role);
-
       if (cpf) localStorage.setItem('cpf', cpf);
-
       navigate('/');
     } catch (err) {
-      console.error('Erro no login:', err);
-      setError('Credenciais inválidas. Tente novamente.');
+      setError(err.response?.data?.message || 'Credenciais inválidas. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
-  };
+  }
+
+  if (success) {
+    return (
+      <>
+        <Navbar />
+        <div className={styles.page}>
+          <SuccessMessage
+            title="Login realizado!"
+            text="Você está logado."
+            linkText="Ir para o início"
+            linkTo="/"
+          />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
       <Navbar />
-      <div className={styles.container}>
-        <div className={styles.left}>
-          <Link to="/" className={styles.back}>← Voltar</Link>
-        </div>
-        <div className={styles.right}>
-          <div className={styles.formWrapper}>
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <div className={styles.left}>
+            <h2>Conecte-se ao MarkCollab</h2>
+            <p>Entre na sua conta para aproveitar todos os benefícios da plataforma MarkCollab.</p>
+          </div>
+          <div className={styles.right}>
             <h2>Entre na sua conta</h2>
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleSubmit} noValidate className={styles.form}>
               <Input
-                icon={FaEnvelope}
+                name="identifier"
                 type="text"
                 placeholder="Email, CPF ou Username"
                 value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                required
+                onChange={e => setIdentifier(e.target.value)}
+                error={error && !password ? error : ''}
               />
+
               <Input
-                icon={FaLock}
-                type="password"
+                name="password"
+                type={showPwd ? 'text' : 'password'}
                 placeholder="Senha"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+                onChange={e => setPassword(e.target.value)}
+                error={error && password ? error : ''}
+                icon={showPwd ? FaEyeSlash : FaEye}
+                onIconClick={() => setShowPwd(v => !v)}
               />
-              <div className={styles.forgot}>Esqueci a senha</div>
-              {error && <div className={styles.error}>{error}</div>}
-              <Button type="submit">Entrar</Button>
+
+              <div className={styles.forgot}>
+                <Link to="/esqueci-senha">Esqueci minha senha</Link>
+              </div>
+
+              {error && <div className={styles.serverError}>{error}</div>}
+
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Entrando...' : 'Entrar'}
+              </Button>
             </form>
+
             <div className={styles.signup}>
-              Ainda não possui uma conta? <Link to="/cadastro">Crie agora</Link>
+              Ainda não possui uma conta?{' '}
+              <Link to="/cadastro">Crie agora</Link>
             </div>
           </div>
         </div>
       </div>
     </>
   );
-};
-
-export default LoginPage;
+}

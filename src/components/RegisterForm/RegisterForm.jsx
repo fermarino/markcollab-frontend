@@ -106,7 +106,7 @@ export default function RegisterForm({ type }) {
       )}
 
       <Input
-        label="Nome"
+        label="Nome Completo"
         name="name"
         value={formData.name}
         onChange={handleChange}
@@ -114,7 +114,7 @@ export default function RegisterForm({ type }) {
       />
 
       <Input
-        label="Username público"
+        label="Username"
         name="username"
         value={formData.username}
         onChange={handleChange}
@@ -140,7 +140,7 @@ export default function RegisterForm({ type }) {
       />
 
       <Input
-        label="Email"
+        label="E-mail"
         name="email"
         type="email"
         value={formData.email}
