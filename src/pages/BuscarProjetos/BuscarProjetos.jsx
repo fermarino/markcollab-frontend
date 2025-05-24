@@ -75,7 +75,7 @@ function BuscarProjetos() {
                 <h2 className="projeto-nome">{proj.projectTitle}</h2>
                 <p className="projeto-descricao">{proj.projectDescription}</p>
                 <div className="botoes-projeto">
-                  <Link to="/fazerproposta" className="ver-propostas-btn">Enviar proposta</Link>
+                  <Link to={`/fazerproposta/${proj.projectId}`} className="ver-propostas-btn">Enviar proposta</Link>
                   <Link to="/perfilfreelancer" className="ver-propostas-btn">Ver perfil</Link>
                 </div>
               </div>

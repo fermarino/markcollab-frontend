@@ -13,39 +13,40 @@ const FazerProposta = () => {
   const freelancerCpf = localStorage.getItem("cpf");
 
   const enviarProposta = async () => {
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const proposta = {
-      proposalValue: valor,
-      proposalDescription: descricao,
-      deliveryDate: dataEntrega,
-    };
-
-    const response = await fetch(
-      `/api/projects/${projectId}/interest/${freelancerCpf}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(proposta),
-      }
-    );
-
-    if (response.ok) {
-      alert("✅ Proposta enviada com sucesso!");
-      navigate("/meusprojetosf");
-    } else {
-      alert("❌ Erro ao enviar proposta.");
-    }
-  } catch (error) {
-    alert("❌ Erro de conexão com o servidor.");
-    console.error(error);
-  }
+      const proposta = {
+        projectId: projectId,
+        freelancerCpf: freelancerCpf,
+        proposalValue: valor,
+        proposalDescription: descricao,
+        deliveryDate: dataEntrega,
       };
 
+      const response = await fetch(
+        `/api/interests/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(proposta),
+        }
+      );
+
+      if (response.ok) {
+        alert("✅ Proposta enviada com sucesso!");
+        navigate("/meusprojetosf");
+      } else {
+        alert("❌ Erro ao enviar proposta.");
+      }
+    } catch (error) {
+      alert("❌ Erro de conexão com o servidor.");
+      console.error(error);
+    }
+  };
 
   return (
     <>
