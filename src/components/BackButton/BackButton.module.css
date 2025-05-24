@@ -1,23 +1,17 @@
 .backButton {
-  display: flex;
-  align-items: center;
+  position: absolute;
+  top: 16px;
+  left: 16px;
   background: transparent;
   border: none;
-  color: white;
+  color: var(--white);      /* branco */
   font-size: 1rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  padding: 1px;
+  z-index: 10;
 }
 
-.backButton svg {
-  fill: currentColor;
-  width: 1rem;
-  height: 1rem;
-}
-
-@media (max-width: 950px) {
-  .backButton {
-    color: #1e5bf5;
-  }
+.backButton:hover {
+  opacity: 0.8;
 }

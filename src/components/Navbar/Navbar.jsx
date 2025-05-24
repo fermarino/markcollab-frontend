@@ -1,31 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Navbar.css';
 import { Menu, X } from 'lucide-react';
 import { FaFacebookF, FaInstagram } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
+import './Navbar.css';
 import MainLogo from '../../assets/img/logo_markcollab.png';
 import { AuthContext } from '../../context/AuthContext';
 
 const Navbar = () => {
+  const { isLoggedIn, role } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isLoggedIn, role, logout } = useContext(AuthContext);
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState(role);
 
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  useEffect(() => setUserRole(role), [role]);
+
+  const toggleSidebar = () => setSidebarOpen(o => !o);
   const closeSidebar = () => setSidebarOpen(false);
 
-  const getMeusProjetosPath = () => {
-    if (userRole === 'freelancer') return '/meusprojetosf';
-    if (userRole === 'employer') return '/meusprojetos';
-    return '/';
-  };
-
-  useEffect(() => {
-    setUserRole(role);
-  }, [role]);
-
-  if (isLoggedIn === null) return null; 
+  const getProjetos = () =>
+    userRole === 'freelancer' ? '/meusprojetosf' : '/meusprojetos';
 
   return (
     <>
@@ -39,66 +32,45 @@ const Navbar = () => {
           <span>atendimentomarkcollab@gmail.com</span>
         </div>
       </div>
-
       <nav className="main-navbar">
         <div className="navbar-content">
           <Link to="/" className="logo">
             <img src={MainLogo} alt="MarkCollab Logo" />
           </Link>
-
           <ul className="nav-links">
             <li><Link to="/">Home</Link></li>
-
-            {!isLoggedIn && (
-              <>
-                <li><Link to="/sobre">Sobre</Link></li>
-                <li><Link to="/servicos">Serviços</Link></li>
-              </>
-            )}
-
-            {isLoggedIn ? (
-              <>
-                <li><Link to={getMeusProjetosPath()}>Projetos</Link></li>
-                <li><Link to="/notificacoes">Notificações</Link></li>
-                <li><Link to="/perfil">Conta</Link></li>
-
-              </>
-            ) : (
-              <>
-                <li><Link to="/login" className="btn outlined">Login</Link></li>
-                <li><Link to="/cadastro" className="btn outlined">Cadastro</Link></li>
-              </>
-            )}
+            {!isLoggedIn && <>
+              <li><Link to="/sobre">Sobre</Link></li>
+              <li><Link to="/servicos">Serviços</Link></li>
+            </>}
+            {isLoggedIn ? <>
+              <li><Link to={getProjetos()}>Projetos</Link></li>
+              <li><Link to="/notificacoes">Notificações</Link></li>
+              <li><Link to="/perfil">Conta</Link></li>
+            </> : <>
+              <li><Link to="/login" className="btn outlined">Login</Link></li>
+              <li><Link to="/cadastro" className="btn outlined">Cadastro</Link></li>
+            </>}
           </ul>
-
           <button className="menu-btn" onClick={toggleSidebar}>
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-
-        <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-          <ul onClick={closeSidebar}>
+        <div className={`sidebar ${sidebarOpen ? 'open' : ''}`} onClick={closeSidebar}>
+          <ul>
             <li><Link to="/">Home</Link></li>
-
-            {!isLoggedIn && (
-              <>
-                <li><Link to="/sobre">Sobre</Link></li>
-                <li><Link to="/servicos">Serviços</Link></li>
-              </>
-            )}
-
-            {isLoggedIn ? (
-              <>
-                <li><Link to="/notificacoes">Notificações</Link></li>
-                <li><Link to={getMeusProjetosPath()}>Meus Projetos</Link></li>
-                <li><Link to="/perfil">Perfil</Link></li>
-              </>
-            ) : (
-              <>
-                <li><Link to="/login">Login</Link></li>
-                <li><Link to="/cadastro">Cadastro</Link></li>
-              </>
-            )}
+            {!isLoggedIn && <>
+              <li><Link to="/sobre">Sobre</Link></li>
+              <li><Link to="/servicos">Serviços</Link></li>
+            </>}
+            {isLoggedIn ? <>
+              <li><Link to={getProjetos()}>Projetos</Link></li>
+              <li><Link to="/notificacoes">Notificações</Link></li>
+              <li><Link to="/perfil">Perfil</Link></li>
+            </> : <>
+              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/cadastro">Cadastro</Link></li>
+            </>}
           </ul>
         </div>
       </nav>
