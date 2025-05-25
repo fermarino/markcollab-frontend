@@ -3,13 +3,13 @@ import RegisterPage from '../pages/Register/RegisterPage'
 import ProjectEdit from '../pages/ProjectEdit/ProjectEdit'
 import Publish from '../pages/Publish/Publish'
 import Proposals from '../pages/Proposals/Proposals'
-import MyProjects1 from '../pages/MyProjects1/MyProjects1'
-import BuscarProjetos from "../pages/BuscarProjetos/BuscarProjetos";
+import MyProjectsEmployer from '../pages/MyProjectsEmployer/MyProjectsEmployer'
+import SearchProjects from "../pages/SearchProjects/SearchProjects";
 import FazerProposta from "../pages/FazerProposta/FazerProposta";
 import MeusProjetosF from "../pages/MeusProjetosF/MeusProjetosF";
 import Home from '../pages/Home/Home'
 import About from '../pages/About/About'
-import Services from '../pages/Services/Services'
+import ServicesPage from '../pages/ServicesPage/ServicesPage'
 import PersonalData from '../pages/PersonalData/PersonalData'
 import Profile from '../pages/Profile/Profile'
 import LoginPage from '../pages/Login/LoginPage'
@@ -22,14 +22,14 @@ const AppRoutes = () => {
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/home" element={<Home />} />
       <Route path="/sobre" element={<About />} />
-      <Route path="/servicos" element={<Services />} />
+      <Route path="/servicos" element={<ServicesPage />} />
       <Route path="/cadastro" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/editarprojeto" element={<ProjectEdit />} />
       <Route path="/publicar" element={<Publish />} />
       <Route path="/propostas" element={<Proposals />} />
-      <Route path="/meusprojetos" element={<MyProjects1 />} />
-      <Route path="/buscarprojetos" element={<BuscarProjetos />} />
+      <Route path="/meusprojetos" element={<MyProjectsEmployer />} />
+      <Route path="/buscarprojetos" element={<SearchProjects />} />
       <Route path="/fazerproposta/:projectId" element={<FazerProposta />} />
       <Route path="/meusprojetosf" element={<MeusProjetosF />} />
       <Route path="/dadosPessoais" element={<PersonalData />} />

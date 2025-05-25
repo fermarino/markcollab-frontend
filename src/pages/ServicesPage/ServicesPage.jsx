@@ -1,5 +1,4 @@
-import React from 'react'
-import './Services.css'
+import './ServicesPage.css'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 
