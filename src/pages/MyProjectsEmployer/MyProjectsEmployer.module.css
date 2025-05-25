@@ -1,0 +1,91 @@
+.pageWrapper {
+  min-height: 100vh;
+  background: #f7f9fc;
+}
+
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.selectStatus {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+
+.btn {
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.btnPublish {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+.primary {
+  background: #2C65F6;
+  color: #fff;
+  border-color: #2C65F6;
+}
+.primary:hover {
+  background: #1E4BBE;
+}
+
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+
+.noProjects {
+  text-align: center;
+  color: #777;
+  font-size: 1.1rem;
+  margin: 4rem 0;
+}
+
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .cards {
+    gap: 1rem;
+  }
+}
