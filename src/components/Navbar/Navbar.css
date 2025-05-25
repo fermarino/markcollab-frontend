@@ -39,6 +39,15 @@
   background: #2C65F6; color: #fff !important;
 }
 
+/* já existente */
+.topbar,
+.main-navbar {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid #cecece; /* bordinha clara */
+}
+
+
+
 /* MOBILE */
 .menu-btn { display: none; background: none; border: none; }
 .sidebar {

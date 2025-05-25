@@ -1,0 +1,80 @@
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+.subtitle {
+  color: #555;
+  margin-top: 0.25rem;
+}
+
+.searchBar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.searchInput {
+  flex: 1;
+  height: 3.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.625rem;
+  padding: 0 1rem;
+  font-size: 1rem;
+}
+.searchInput::placeholder {
+  color: #c4c4c4;
+}
+.searchButton {
+  width: 3.75rem;
+  height: 3.75rem;
+  background: #2c65f6;
+  border: none;
+  border-radius: 0.625rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.searchButton:hover {
+  background: #1e4bbe;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.noProjects {
+  text-align: center;
+  color: #777;
+  font-size: 1.1rem;
+  margin: 4rem 0;
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+@media (max-width: 600px) {
+  .searchBar {
+    flex-direction: column;
+  }
+  .searchInput,
+  .searchButton {
+    width: 100%;
+  }
+}

@@ -1,0 +1,152 @@
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.btnMenu {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #2C65F6;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  top: 2.5rem;
+  right: 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  z-index: 20;
+}
+
+.btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.secondary {
+  background: #fff;
+  color: #2C65F6;
+  border: 1px solid #2C65F6;
+}
+.secondary:hover {
+  background: #2C65F6;
+  color: #fff;
+}
+
+.danger {
+  background: #fff;
+  color: #DC3545;
+  border: 1px solid #DC3545;
+}
+.danger:hover {
+  background: #DC3545;
+  color: #fff;
+}
+
+.btnMedium {
+  font-size: 0.85rem;
+}
+
+.cardBody {
+  margin-top: 2rem;
+  flex: 1;
+}
+
+.cardTitle {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.cardLabel {
+  font-weight: 600;
+  color: #333;
+  margin-right: 0.25rem;
+}
+.cardText {
+  flex: 1;
+  max-width: 60%;
+  color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardInfo {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+/* Quando escondemos status, alinhar só o botão à direita */
+.footerEnd {
+  justify-content: flex-end;
+}
+
+.statusBadge {
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.75rem;
+}
+
+.btnOutlined {
+  border: 1px solid #2C65F6;
+  background: transparent;
+  color: #2C65F6;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.btnOutlined:hover {
+  background: #2C65F6;
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .cardText {
+    -webkit-line-clamp: 2;
+  }
+  .btnMenu {
+    font-size: 1rem;
+  }
+}
