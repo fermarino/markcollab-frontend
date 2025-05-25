@@ -1,187 +1,176 @@
 import React, { useState } from 'react';
 import Navbar from '../../components/navbar/Navbar.jsx';
-import './Publish.css';
+import Input from '../../components/Input/Input.jsx';
 import axios from 'axios';
+import styles from './Publish.module.css';
 
-const Publish = () => {
+export default function Publish() {
   const [project, setProject] = useState({
     name: '',
-    description: '',
     specifications: '',
+    description: '',
     deadline: '',
     projectPrice: ''
   });
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
+  const cpf   = localStorage.getItem('cpf');
+  const token = localStorage.getItem('token');
 
-  const handleChange = (e) => {
-    setProject({ ...project, [e.target.name]: e.target.value });
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setProject(p => ({ ...p, [name]: value }));
+    if (errors[name]) setErrors(e => ({ ...e, [name]: '' }));
   };
 
-  // Integração com a IA para gerar descrição automática
-  const gerarDescricaoAutomatica = () => {
-    const projectData = {
-      name: project.name,
-      specifications: project.specifications,
-      deadline: project.deadline
-    };
-
-    axios.post('http://localhost:8080/api/ia/gerar-descricao', projectData)
-      .then(response => {
-        const descricaoGerada = response.data.descricao?.toString().trim();
-        if (!descricaoGerada) {
-          alert("A descrição gerada pela IA está vazia ou inválida.");
-          return;
-        }
-
-        // Atualiza apenas a descrição, preservando os outros campos
-        setProject(prevState => ({
-          ...prevState,
-          description: descricaoGerada
-        }));
-
-        console.log("Descrição gerada pela IA:", descricaoGerada);
+  const handlePriceBlur = () => {
+    let raw = project.projectPrice.replace(/\D/g, '');
+    let num = parseFloat(raw) / 100;
+    if (isNaN(num)) num = 0;
+    if (num > 20000) num = 20000;
+    setProject(p => ({
+      ...p,
+      projectPrice: num.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
       })
-      .catch(error => {
-        console.error("Erro ao chamar a IA:", error);
-        alert("Erro ao gerar descrição automática. Tente novamente.");
-      });
+    }));
+    setErrors(e => ({ ...e, projectPrice: '' }));
   };
 
-  const handleSubmit = (e) => {
+  const gerarDescricaoIA = () => {
+    const { name, specifications, deadline } = project;
+    axios.post('/api/ia/gerar-descricao', { name, specifications, deadline })
+      .then(res => {
+        const desc = res.data.descricao?.trim();
+        if (!desc) throw new Error();
+        setProject(p => ({ ...p, description: desc }));
+        setErrors(e => ({ ...e, description: '' }));
+      })
+      .catch(() => setErrors(e => ({ ...e, description: 'Não foi possível gerar descrição.' })));
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!project.name.trim()) e.name = 'Nome é obrigatório.';
+    if (!project.specifications.trim()) e.specifications = 'Especificações são obrigatórias.';
+    if (!project.description.trim()) e.description = 'Descrição é obrigatória.';
+    if (!project.deadline) {
+      e.deadline = 'Prazo é obrigatório.';
+    } else {
+      const today = new Date(); today.setHours(0,0,0,0);
+      const sel = new Date(project.deadline);
+      if (sel < today) e.deadline = 'Selecione uma data válida.';
+    }
+    const preco = parseFloat(
+      project.projectPrice.replace(/[R$.]/g,'').replace(',','.')
+    );
+    if (isNaN(preco) || preco <= 0 || preco > 20000) {
+      e.projectPrice = 'Digite um valor válido';
+    }
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSubmit = e => {
     e.preventDefault();
-
-    const employerCpf = localStorage.getItem('cpf');
-    const token = localStorage.getItem('token');
-
-    if (!employerCpf) {
-      console.error('CPF do contratante não encontrado no localStorage');
-      alert("Erro: CPF do contratante não encontrado.");
-      return;
-    }
-
-    if (!token) {
-      console.error('Token de autenticação não encontrado');
-      alert("Erro: token de autenticação não encontrado.");
-      return;
-    }
-
-    // Validação do preço
-    const preco = parseFloat(project.projectPrice);
-    if (!project.projectPrice || isNaN(preco)) {
-      alert("Por favor, preencha um preço válido para o projeto.");
-      return;
-    }
-
-    const body = {
+    setSubmitted(true);
+    if (!cpf || !token) return alert('Faça login novamente.');
+    if (!validate()) return;
+    const preco = parseFloat(
+      project.projectPrice.replace(/[R$.]/g,'').replace(',','.')
+    );
+    axios.post(`/api/projects/${cpf}`, {
       projectTitle: project.name,
-      projectDescription: project.description,
       projectSpecifications: project.specifications,
+      projectDescription: project.description,
       deadline: project.deadline,
       projectPrice: preco,
       open: true,
-      status: "Ativo"
-    };
-
-    console.log("Enviando projeto:", body);
-
-    axios.post(
-      `http://localhost:8080/api/projects/${employerCpf}`,
-      body,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    )
-      .then(response => {
-        console.log("Projeto publicado:", response.data);
-        alert("Projeto publicado com sucesso!");
-        setProject({
-          name: '',
-          description: '',
-          specifications: '',
-          deadline: '',
-          projectPrice: ''
-        });
-      })
-      .catch(error => {
-        console.error("Erro ao publicar o projeto:", error);
-        if (error.response) {
-          console.error("Detalhes do erro:", error.response.data);
-          alert("Erro ao publicar projeto: " + (error.response.data.message || "verifique os dados e tente novamente."));
-        } else {
-          alert("Erro ao publicar projeto. Tente novamente.");
-        }
-      });
+      status: 'Ativo'
+    }, { headers: { Authorization: `Bearer ${token}` }})
+    .then(() => {
+      setSuccessMsg('Projeto publicado com sucesso!');
+      setProject({ name:'', specifications:'', description:'', deadline:'', projectPrice:'' });
+      setErrors({});
+      setSubmitted(false);
+      setTimeout(() => setSuccessMsg(''), 3000);
+    })
+    .catch(() => alert('Erro ao publicar projeto.'));
   };
 
   return (
-    <>
+    <div className={styles.pageWrapper}>
       <Navbar />
-      <div className="project-edit-container">
-        <a href="/meusprojetos" className="back-link">&larr; Voltar</a>
-        <h2 className="edit-title">Publicar projeto</h2>
-        <form className="edit-form" onSubmit={handleSubmit}>
-          <label>Nome do projeto</label>
-          <input
-            type="text"
+      <div className={styles.card}>
+        <h2 className={styles.title}>Publique o que você precisa!</h2>
+        {successMsg && <div className={styles.success}>{successMsg}</div>}
+
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <Input
+            label="Nome do projeto"
             name="name"
-            className="input-field bordered"
             value={project.name}
             onChange={handleChange}
-            required
+            error={submitted && errors.name}
           />
 
-          <label>Especificações do projeto</label>
+          <label className={styles.label}>Especificações</label>
           <textarea
             name="specifications"
-            className="textarea-field"
+            className={`${styles.textarea} ${submitted && errors.specifications ? styles.inputError : ''}`}
             value={project.specifications}
             onChange={handleChange}
-            required
           />
+          {submitted && errors.specifications && (
+            <span className={styles.error}>{errors.specifications}</span>
+          )}
 
-          <label>Prazo de entrega</label>
-          <input
-            type="date"
-            name="deadline"
-            className="input-field bordered"
-            value={project.deadline}
-            onChange={handleChange}
-            required
-          />
-
-          <label>Preço</label>
-          <input
-            type="number"
-            name="projectPrice"
-            className="input-field bordered"
-            value={project.projectPrice}
-            onChange={handleChange}
-            required
-          />
-
-          <label>Descrição do projeto</label>
+          <label className={styles.label}>Descrição</label>
           <textarea
             name="description"
-            className="textarea-field"
+            className={`${styles.textarea} ${submitted && errors.description ? styles.inputError : ''}`}
             value={project.description}
             onChange={handleChange}
-            required
           />
+          {submitted && errors.description && (
+            <span className={styles.error}>{errors.description}</span>
+          )}
 
           <button
             type="button"
-            className="auto-desc-button"
-            onClick={gerarDescricaoAutomatica}
+            className={styles.iaButton}
+            onClick={gerarDescricaoIA}
           >
-            🤖 Gerar descrição automática
+            🤖 Gerar descrição com IA
           </button>
 
-          <button type="submit" className="edit-button">Publicar projeto</button>
+          <Input
+            label="Prazo de entrega"
+            name="deadline"
+            type="date"
+            value={project.deadline}
+            onChange={handleChange}
+            error={submitted && errors.deadline}
+          />
+
+          <Input
+            label="Preço"
+            name="projectPrice"
+            type="text"
+            value={project.projectPrice}
+            onChange={handleChange}
+            onBlur={handlePriceBlur}
+            error={submitted && errors.projectPrice}
+            placeholder="R$ 0,00"
+          />
+
+          <button type="submit" className={styles.publishButton}>
+            Publicar
+          </button>
         </form>
       </div>
-    </>
+    </div>
   );
-};
-
-export default Publish;
+}
