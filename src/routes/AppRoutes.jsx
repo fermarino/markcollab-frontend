@@ -5,8 +5,8 @@ import Publish from '../pages/Publish/Publish'
 import Proposals from '../pages/Proposals/Proposals'
 import MyProjectsEmployer from '../pages/MyProjectsEmployer/MyProjectsEmployer'
 import SearchProjects from "../pages/SearchProjects/SearchProjects";
-import FazerProposta from "../pages/FazerProposta/FazerProposta";
-import MeusProjetosF from "../pages/MeusProjetosF/MeusProjetosF";
+import SendProposal from "../pages/SendProposal/SendProposal";
+import MyProjectsFreelancer from "../pages/MyProjectsFreelancer/MyProjectsFreelancer";
 import Home from '../pages/Home/Home'
 import About from '../pages/About/About'
 import ServicesPage from '../pages/ServicesPage/ServicesPage'
@@ -30,8 +30,8 @@ const AppRoutes = () => {
       <Route path="/propostas" element={<Proposals />} />
       <Route path="/meusprojetos" element={<MyProjectsEmployer />} />
       <Route path="/buscarprojetos" element={<SearchProjects />} />
-      <Route path="/fazerproposta/:projectId" element={<FazerProposta />} />
-      <Route path="/meusprojetosf" element={<MeusProjetosF />} />
+      <Route path="/fazerproposta/:projectId" element={<SendProposal />} />
+      <Route path="/meusprojetosfreelancer" element={<MyProjectsFreelancer />} />
       <Route path="/dadosPessoais" element={<PersonalData />} />
       <Route path="/perfil" element={<Profile />} />
     </Routes>

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Popupcancelar from "../../components/CancelProject/CancelProject.jsx";
-import "./MeusprojetosF.css";
 import Navbar from '../../components/navbar/Navbar.jsx';
 import axios from "axios";
+import "./MyProjectsFreelancer.css";
 
-const MeusprojetosF = () => {
+const MyProjectsFreelancer = () => {
   const [projetos, setProjetos] = useState([]);
-  const [menuAberto, setMenuAberto] = useState(null);
   const [popupVisivel, setPopupVisivel] = useState(false);
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
 
@@ -37,11 +36,6 @@ const MeusprojetosF = () => {
     fetchProjetos();
   }, [cpf, token]);
 
-  const toggleMenu = (id) => {
-    // Se o menu do projeto for aberto, fechamos ele. Caso contrário, abrimos.
-    setMenuAberto(menuAberto === id ? null : id);
-  };
-
   const abrirPopupCancelar = (projetoId) => {
     setProjetoSelecionado(projetoId);
     setPopupVisivel(true);
@@ -58,30 +52,52 @@ const MeusprojetosF = () => {
   };
 
   return (
-    <div>
+    <div className="pageWrapper">
       <Navbar />
       <div className="container">
-        <h1 className="titulo">Meus projetos</h1>
-          <Link to="/buscarprojetos" className="botao-criar">Bucar projetos</Link>
-        <div className="projetos">
-          {projetos.map((projeto) => (
-            <div key={projeto.id} className="projeto-card">
-              <div className="projeto-info">
-                <h3>{projeto.projectTitle}</h3>
-                <p>{projeto.projectDescription}</p>
-              </div>
-              <div className="projetos-status" style={{ backgroundColor: projeto.status === "Concluído" ? "#28a745" : projeto.status === "Em andamento" ? "#ffc107" : "#dc3545" }}>
-                {projeto.status}
-              </div>
-           
-            </div>
-          ))}
+        <div className="header">
+          <h1 className="title">Meus Projetos</h1>
+          <Link to="/buscarprojetos" className="btn primary btnBuscar">
+            Buscar Projetos
+          </Link>
         </div>
+
+        {projetos.length > 0 ? (
+          <div className="cards">
+            {projetos.map((projeto) => (
+              <div key={projeto.id} className="projeto-card">
+                <div className="projeto-info">
+                  <h3>{projeto.projectTitle}</h3>
+                  <p>{projeto.projectDescription}</p>
+                  <p><strong>Prazo:</strong> {projeto.deadline}</p>
+                  <p><strong>Preço:</strong> R$ {projeto.price}</p>
+                </div>
+                <div
+                  className="projetos-status"
+                  style={{
+                    backgroundColor:
+                      projeto.status === "Concluído"
+                        ? "#28a745"
+                        : projeto.status === "Em andamento"
+                        ? "#ffc107"
+                        : "#dc3545",
+                  }}
+                >
+                  {projeto.status}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="noProjects">Nenhum projeto encontrado.</p>
+        )}
       </div>
 
-      {popupVisivel && <Popupcancelar onClose={fecharPopupCancelar} onConfirm={confirmarCancelamento} />}
+      {popupVisivel && (
+        <Popupcancelar onClose={fecharPopupCancelar} onConfirm={confirmarCancelamento} />
+      )}
     </div>
   );
 };
 
-export default MeusprojetosF;
+export default MyProjectsFreelancer;

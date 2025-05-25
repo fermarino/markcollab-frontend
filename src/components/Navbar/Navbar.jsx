@@ -18,7 +18,7 @@ const Navbar = () => {
   const closeSidebar = () => setSidebarOpen(false);
 
   const getProjetos = () =>
-    userRole === 'freelancer' ? '/meusprojetosf' : '/meusprojetos';
+    userRole === 'freelancer' ? '/meusprojetosfreelancer' : '/meusprojetos';
 
   return (
     <>
@@ -45,7 +45,6 @@ const Navbar = () => {
             </>}
             {isLoggedIn ? <>
               <li><Link to={getProjetos()}>Projetos</Link></li>
-              <li><Link to="/notificacoes">Notificações</Link></li>
               <li><Link to="/perfil">Conta</Link></li>
             </> : <>
               <li><Link to="/login" className="btn outlined">Login</Link></li>
