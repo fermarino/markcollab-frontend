@@ -15,7 +15,6 @@ export default function ProjectCard({
   const [menuOpen, setMenuOpen] = useState(false);
   const ref = useRef(null);
 
-  // Fecha dropdown ao clicar fora
   useEffect(() => {
     const handleClickOutside = e => {
       if (ref.current && !ref.current.contains(e.target)) {
@@ -27,7 +26,7 @@ export default function ProjectCard({
   }, []);
 
   const {
-    id,
+    projectId,
     projectTitle,
     projectDescription,
     projectSpecifications,
@@ -37,28 +36,32 @@ export default function ProjectCard({
   } = project;
 
   const statusColor =
-    status === 'Concluído'     ? '#28a745' :
-    status === 'Em andamento'  ? '#ffc107' :
-                                '#2C65F6';
+    status === 'Concluído' ? '#28a745' :
+    status === 'Em andamento' ? '#ffc107' :
+    '#2C65F6';
 
   return (
     <div className={styles.card} ref={ref}>
       {showDropdown && (
         <button
           className={styles.btnMenu}
-          onClick={e => { e.stopPropagation(); setMenuOpen(o => !o); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setMenuOpen((prev) => !prev);
+          }}
           aria-label="Menu"
           type="button"
         >
           ⋮
         </button>
       )}
+
       {menuOpen && (
-        <div className={styles.dropdown} onClick={e => e.stopPropagation()}>
+        <div className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
           {onEdit && (
             <button
               className={`${styles.btn} ${styles.secondary} ${styles.btnMedium}`}
-              onClick={() => onEdit(id)}
+              onClick={() => onEdit(projectId)}
               type="button"
             >
               Editar
@@ -67,7 +70,7 @@ export default function ProjectCard({
           {onCancel && (
             <button
               className={`${styles.btn} ${styles.danger} ${styles.btnMedium}`}
-              onClick={() => onCancel(id)}
+              onClick={() => onCancel(projectId)}
               type="button"
             >
               Cancelar
@@ -90,22 +93,19 @@ export default function ProjectCard({
         </p>
 
         <p className={styles.cardInfo}>
-          <strong>Prazo:</strong>{' '}
-          {new Date(deadline).toLocaleDateString()}
+          <strong>Prazo:</strong> {new Date(deadline).toLocaleDateString()}
         </p>
+
         <p className={styles.cardInfo}>
           <strong>Preço:</strong>{' '}
           {projectPrice?.toLocaleString('pt-BR', {
-            style: 'currency', currency: 'BRL'
+            style: 'currency',
+            currency: 'BRL'
           })}
         </p>
       </div>
 
-      <div
-        className={`${styles.cardFooter} ${
-          hideStatus ? styles.footerEnd : ''
-        }`}
-      >
+      <div className={`${styles.cardFooter} ${hideStatus ? styles.footerEnd : ''}`}>
         {!hideStatus && (
           <span
             className={styles.statusBadge}
@@ -116,14 +116,15 @@ export default function ProjectCard({
         )}
 
         {showViewProposals && (
-          <Link to={`/propostas/${id}`} className={styles.btnOutlined}>
+          <Link to={`/propostas/${projectId}`} className={styles.btnOutlined}>
             Ver propostas
           </Link>
         )}
+
         {showSendProposal && (
           <button
             className={styles.btnOutlined}
-            onClick={() => onSendProposal(id)}
+            onClick={() => onSendProposal(projectId)}
             type="button"
           >
             Fazer proposta

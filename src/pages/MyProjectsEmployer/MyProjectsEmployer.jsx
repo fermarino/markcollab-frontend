@@ -8,13 +8,14 @@ import ProjectCard from '../../components/ProjectCard/ProjectCard.jsx';
 import styles from './MyProjectsEmployer.module.css';
 
 export default function MyProjectsEmployer() {
-  const [projetos, setProjetos]         = useState([]);
+  const [projetos, setProjetos] = useState([]);
   const [filterStatus, setFilterStatus] = useState('Todos');
   const [popupVisivel, setPopupVisivel] = useState(false);
-  const [selId, setSelId]               = useState(null);
-  const [currentPage, setCurrentPage]   = useState(1);
-  const itemsPerPage                    = 3;
-  const cpf   = localStorage.getItem('cpf');
+  const [selId, setSelId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
+  const cpf = localStorage.getItem('cpf');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -38,16 +39,25 @@ export default function MyProjectsEmployer() {
     currentPage * itemsPerPage
   );
 
-  const handleEdit   = id => navigate(`/editarprojeto/${id}`);
-  const handleCancel = id => { setSelId(id); setPopupVisivel(true); };
+  const handleEdit = (id) => navigate(`/editarprojeto/${id}`);
+
+  const handleCancel = (id) => {
+    setSelId(id);
+    setPopupVisivel(true);
+  };
 
   const confirmCancel = () => {
-    axios.delete(`http://localhost:8080/api/projects/${selId}`, {
+    axios.delete(`http://localhost:8080/api/projects/${selId}/${cpf}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
-    .then(() => setProjetos(prev => prev.filter(x => x.id !== selId)))
-    .catch(() => alert('Erro ao cancelar projeto.'));
-    setPopupVisivel(false);
+    .then(() => {
+      setProjetos(prev => prev.filter(x => x.projectId !== selId));
+      setPopupVisivel(false);
+    })
+    .catch(() => {
+      alert('Erro ao cancelar projeto.');
+      setPopupVisivel(false);
+    });
   };
 
   return (
@@ -60,7 +70,10 @@ export default function MyProjectsEmployer() {
             <select
               className={styles.selectStatus}
               value={filterStatus}
-              onChange={e => { setFilterStatus(e.target.value); setCurrentPage(1); }}
+              onChange={e => {
+                setFilterStatus(e.target.value);
+                setCurrentPage(1);
+              }}
             >
               <option>Todos</option>
               <option>Aberto</option>
@@ -81,7 +94,7 @@ export default function MyProjectsEmployer() {
             <div className={styles.cards}>
               {paged.map(p => (
                 <ProjectCard
-                  key={p.id}
+                  key={p.projectId}
                   project={p}
                   showDropdown
                   showViewProposals={p.status === 'Aberto'}
