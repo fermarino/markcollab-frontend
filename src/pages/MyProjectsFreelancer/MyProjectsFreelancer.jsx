@@ -1,14 +1,14 @@
+// src/pages/MyProjectsFreelancer/MyProjectsFreelancer.jsx
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Popupcancelar from "../../components/CancelProject/CancelProject.jsx";
-import Navbar from '../../components/navbar/Navbar.jsx';
+import Navbar from "../../components/navbar/Navbar.jsx";
 import axios from "axios";
 import "./MyProjectsFreelancer.css";
 
 const MyProjectsFreelancer = () => {
   const [projetos, setProjetos] = useState([]);
-  const [popupVisivel, setPopupVisivel] = useState(false);
-  const [projetoSelecionado, setProjetoSelecionado] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const cpf = localStorage.getItem("cpf");
   const token = localStorage.getItem("token");
@@ -16,47 +16,42 @@ const MyProjectsFreelancer = () => {
   useEffect(() => {
     if (!cpf || !token) {
       alert("CPF ou token não encontrados. Faça login novamente.");
+      setLoading(false);
       return;
     }
 
-    const fetchProjetos = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/projects/employer/${cpf}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setProjetos(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar projetos:", error);
+    // Chama o endpoint /api/projects/freelancer/{cpf}
+    axios
+      .get(`http://localhost:8080/api/projects/freelancer/${cpf}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        console.log("Projetos contratados para freelancer:", data);
+        setProjetos(data || []);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar projetos contratados (Freelancer):", error);
         alert("Erro ao carregar os projetos.");
-      }
-    };
-
-    fetchProjetos();
+        setLoading(false);
+      });
   }, [cpf, token]);
 
-  const abrirPopupCancelar = (projetoId) => {
-    setProjetoSelecionado(projetoId);
-    setPopupVisivel(true);
-  };
-
-  const fecharPopupCancelar = () => {
-    setPopupVisivel(false);
-    setProjetoSelecionado(null);
-  };
-
-  const confirmarCancelamento = () => {
-    console.log(`Projeto ${projetoSelecionado} cancelado.`);
-    fecharPopupCancelar();
-  };
+  if (loading) {
+    return (
+      <div className="pageWrapper">
+        <Navbar />
+        <div className="loading">Carregando seus projetos contratados...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="pageWrapper">
       <Navbar />
       <div className="container">
         <div className="header">
-          <h1 className="title">Meus Projetos</h1>
+          <h1 className="title">Meus Projetos (Freelancer)</h1>
           <Link to="/buscarprojetos" className="btn primary btnBuscar">
             Buscar Projetos
           </Link>
@@ -65,12 +60,25 @@ const MyProjectsFreelancer = () => {
         {projetos.length > 0 ? (
           <div className="cards">
             {projetos.map((projeto) => (
-              <div key={projeto.id} className="projeto-card">
+              <div key={projeto.projectId} className="projeto-card">
                 <div className="projeto-info">
                   <h3>{projeto.projectTitle}</h3>
                   <p>{projeto.projectDescription}</p>
-                  <p><strong>Prazo:</strong> {projeto.deadline}</p>
-                  <p><strong>Preço:</strong> R$ {projeto.price}</p>
+                  <p>
+                    <strong>Prazo:</strong>{" "}
+                    {projeto.deadline
+                      ? new Date(projeto.deadline).toLocaleDateString()
+                      : "-"}
+                  </p>
+                  <p>
+                    <strong>Preço:</strong>{" "}
+                    R${" "}
+                    {typeof projeto.projectPrice === "number"
+                      ? projeto.projectPrice.toLocaleString("pt-BR", {
+                          minimumFractionDigits: 2,
+                        })
+                      : projeto.projectPrice}
+                  </p>
                 </div>
                 <div
                   className="projetos-status"
@@ -89,13 +97,9 @@ const MyProjectsFreelancer = () => {
             ))}
           </div>
         ) : (
-          <p className="noProjects">Nenhum projeto encontrado.</p>
+          <p className="noProjects">Você ainda não foi contratado em nenhum projeto.</p>
         )}
       </div>
-
-      {popupVisivel && (
-        <Popupcancelar onClose={fecharPopupCancelar} onConfirm={confirmarCancelamento} />
-      )}
     </div>
   );
 };

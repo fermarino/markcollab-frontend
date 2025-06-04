@@ -1,3 +1,4 @@
+// src/pages/SearchProjects/SearchProjects.jsx
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
@@ -19,6 +20,7 @@ export default function SearchProjects() {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(({ data }) => {
+      // Filtra apenas os projetos com status "Aberto"
       const abertos = data.filter(p => p.status === "Aberto");
       setProjetos(abertos);
       setFiltrados(abertos);
@@ -67,7 +69,7 @@ export default function SearchProjects() {
                 <ProjectCard
                   key={proj.projectId}
                   project={{
-                    id: proj.projectId,
+                    projectId: proj.projectId,
                     projectTitle: proj.projectTitle,
                     projectDescription: proj.projectDescription,
                     projectSpecifications: proj.projectSpecifications,
@@ -75,12 +77,15 @@ export default function SearchProjects() {
                     projectPrice: proj.projectPrice,
                     status: proj.status
                   }}
-                  showSendProposal
-                  hideStatus
-                  onSendProposal={id => window.location = `/fazerproposta/${id}`}
+                  showSendProposal={true}
+                  hideStatus={false}
+                  onSendProposal={id => {
+                    window.location.href = `/fazerproposta/${id}`;
+                  }}
                 />
               ))}
             </div>
+
             <div className={styles.paginationWrapper}>
               <Pagination
                 currentPage={currentPage}

@@ -1,7 +1,9 @@
+// src/pages/ProjectEdit/ProjectEdit.jsx
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Navbar from '../../components/navbar/Navbar.jsx';
 import axios from 'axios';
+import Navbar from '../../components/navbar/Navbar.jsx';
 import './ProjectEdit.css';
 
 const ProjectEdit = () => {
@@ -20,29 +22,32 @@ const ProjectEdit = () => {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      alert('Você precisa estar logado para editar um projeto.');
+      return;
+    }
 
     axios
       .get(`http://localhost:8080/api/projects/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       })
-      .then(res => {
+      .then((res) => {
         const p = res.data;
         setProject({
-          projectTitle: p.projectTitle,
-          projectDescription: p.projectDescription,
-          projectSpecifications: p.projectSpecifications,
-          deadline: p.deadline?.split("T")[0],
-          projectPrice: p.projectPrice,
-          status: p.status
+          projectTitle: p.projectTitle || '',
+          projectDescription: p.projectDescription || '',
+          projectSpecifications: p.projectSpecifications || '',
+          // Se não houver deadline, mantemos string vazia
+          deadline: p.deadline ? p.deadline.split('T')[0] : '',
+          projectPrice: p.projectPrice != null ? p.projectPrice : '',
+          status: p.status || ''
         });
         setLoading(false);
       })
-      .catch(err => {
-        console.error(err);
-        alert('Erro ao carregar projeto');
+      .catch((err) => {
+        console.error('Erro ao carregar projeto (GET):', err.response || err);
+        alert('Erro ao carregar projeto.');
+        setLoading(false);
       });
   }, [id, token]);
 
@@ -53,22 +58,32 @@ const ProjectEdit = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Se deadline está vazio string, enviamos null para o backend
+    const deadlineParaEnviar = project.deadline.trim() === '' ? null : project.deadline;
+
     axios
-      .put(`http://localhost:8080/api/projects/${id}/${cpf}`, {
-        ...project,
-        projectPrice: parseFloat(project.projectPrice)
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      .put(
+        `http://localhost:8080/api/projects/${id}/${cpf}`,
+        {
+          projectTitle: project.projectTitle,
+          projectDescription: project.projectDescription,
+          projectSpecifications: project.projectSpecifications,
+          deadline: deadlineParaEnviar,
+          projectPrice: parseFloat(project.projectPrice),
+          status: project.status
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
         }
-      })
+      )
       .then(() => {
-        alert("Projeto atualizado com sucesso!");
+        alert('✅ Projeto atualizado com sucesso!');
         navigate('/meusprojetos');
       })
-      .catch(err => {
-        console.error(err);
-        alert('Erro ao atualizar projeto');
+      .catch((err) => {
+        console.error('Erro ao atualizar projeto (PUT):', err.response || err);
+        const msgBackend = err.response?.data || err.message;
+        alert(`❌ Erro ao atualizar projeto: ${msgBackend}`);
       });
   };
 
@@ -116,7 +131,7 @@ const ProjectEdit = () => {
             className="input-field bordered"
             value={project.deadline}
             onChange={handleChange}
-            required
+            // não é obrigatório, pois o campo pode ficar vazio
           />
 
           <label>Preço do projeto</label>

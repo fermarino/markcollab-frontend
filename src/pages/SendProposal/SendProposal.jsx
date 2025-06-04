@@ -1,6 +1,7 @@
-import { useState } from "react";
+// src/pages/SendProposal/SendProposal.jsx
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Navbar from '../../components/navbar/Navbar';
+import Navbar from "../../components/navbar/Navbar.jsx";
 import "./SendProposal.css";
 
 const SendProposal = () => {
@@ -16,17 +17,14 @@ const SendProposal = () => {
 
   const validarCampos = () => {
     const novosErros = {};
-
     if (!valor.trim()) {
       novosErros.valor = "O valor da proposta é obrigatório.";
     } else if (isNaN(Number(valor)) || Number(valor) <= 0) {
       novosErros.valor = "O valor deve ser um número maior que zero.";
     }
-
     if (!descricao.trim()) {
       novosErros.descricao = "A descrição é obrigatória.";
     }
-
     if (!dataEntrega) {
       novosErros.dataEntrega = "A data de entrega é obrigatória.";
     } else {
@@ -37,33 +35,29 @@ const SendProposal = () => {
         novosErros.dataEntrega = "A data de entrega não pode ser no passado.";
       }
     }
-
     setErrors(novosErros);
     return Object.keys(novosErros).length === 0;
   };
 
   const enviarProposta = async () => {
     setSucesso("");
-    if (!validarCampos()) {
-      return;
-    }
+    if (!validarCampos()) return;
 
     try {
       const token = localStorage.getItem("token");
-
       const proposta = {
-        projectId: projectId,
+        projectId: Number(projectId),
         freelancerCpf: freelancerCpf,
         proposalValue: valor,
         proposalDescription: descricao,
         deliveryDate: dataEntrega,
       };
 
-      const response = await fetch(`/api/interests/`, {
+      const response = await fetch("http://localhost:8080/api/interests/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : "",
         },
         body: JSON.stringify(proposta),
       });
@@ -78,7 +72,8 @@ const SendProposal = () => {
           navigate("/meusprojetosfreelancer");
         }, 2000);
       } else {
-        alert("❌ Erro ao enviar proposta.");
+        const erroTexto = await response.text();
+        alert(`❌ Erro ao enviar proposta: ${erroTexto}`);
       }
     } catch (error) {
       alert("❌ Erro de conexão com o servidor.");
@@ -91,7 +86,9 @@ const SendProposal = () => {
       <Navbar />
       <div className="sendproposal-container">
         <div className="sendproposal-content">
-          <h2 className="titulo">Enviar <span>proposta</span></h2>
+          <h2 className="titulo">
+            Enviar <span>proposta</span>
+          </h2>
 
           <div className="campo">
             <label>Valor da proposta</label>
@@ -127,7 +124,6 @@ const SendProposal = () => {
           <button className="btn-enviar" onClick={enviarProposta}>
             Enviar proposta
           </button>
-
           {sucesso && <p className="sucesso">{sucesso}</p>}
         </div>
       </div>

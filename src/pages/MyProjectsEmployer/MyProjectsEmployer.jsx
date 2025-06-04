@@ -1,3 +1,5 @@
+// src/pages/MyProjectsEmployer/MyProjectsEmployer.jsx
+
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -19,20 +21,43 @@ export default function MyProjectsEmployer() {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
+  // 1) Carrega TODOS os projetos do empregador (área “Empregador”)
   useEffect(() => {
-    if (cpf && token) {
-      axios.get(`http://localhost:8080/api/projects/employer/${cpf}`, {
-        headers: { Authorization: `Bearer ${token}` }
+    if (!cpf || !token) return;
+
+    axios
+      .get(`http://localhost:8080/api/projects/employer/${cpf}`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then(({ data }) => setProjetos(data))
-      .catch(() => alert('Erro ao carregar projetos.'));
-    }
+      .then(({ data }) => {
+        console.log('Projetos recebidos do backend:', data);
+        setProjetos(data || []);
+      })
+      .catch((err) => {
+        console.error('Erro ao carregar projetos:', err);
+        alert('Erro ao carregar projetos.');
+        setProjetos([]);
+      });
   }, [cpf, token]);
 
-  const listaFiltrada = filterStatus === 'Todos'
-    ? projetos
-    : projetos.filter(p => p.status === filterStatus);
+  // Função para normalizar string de status
+  const normalize = (str) => (str || '').trim().toLowerCase();
 
+  // 2) Filtra localmente pelo status selecionado
+  const listaFiltrada =
+    filterStatus === 'Todos'
+      ? projetos
+      : projetos.filter(
+          (p) => normalize(p.status) === normalize(filterStatus)
+        );
+
+  console.log(
+    'FilterStatus:', filterStatus,
+    '| Projetos filtrados:',
+    JSON.stringify(listaFiltrada)
+  );
+
+  // 3) Paginação local: exibe apenas 3 itens por página
   const totalPages = Math.ceil(listaFiltrada.length / itemsPerPage);
   const paged = listaFiltrada.slice(
     (currentPage - 1) * itemsPerPage,
@@ -47,22 +72,25 @@ export default function MyProjectsEmployer() {
   };
 
   const confirmCancel = () => {
-    axios.delete(`http://localhost:8080/api/projects/${selId}/${cpf}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(() => {
-      setProjetos(prev => prev.filter(x => x.projectId !== selId));
-      setPopupVisivel(false);
-    })
-    .catch(() => {
-      alert('Erro ao cancelar projeto.');
-      setPopupVisivel(false);
-    });
+    axios
+      .delete(`http://localhost:8080/api/projects/${selId}/${cpf}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => {
+        setProjetos((prev) => prev.filter((x) => x.projectId !== selId));
+        setPopupVisivel(false);
+      })
+      .catch((err) => {
+        console.error('Erro ao cancelar projeto:', err);
+        alert('Erro ao cancelar projeto.');
+        setPopupVisivel(false);
+      });
   };
 
   return (
     <div className={styles.pageWrapper}>
       <Navbar />
+
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>Meus Projetos</h1>
@@ -70,7 +98,7 @@ export default function MyProjectsEmployer() {
             <select
               className={styles.selectStatus}
               value={filterStatus}
-              onChange={e => {
+              onChange={(e) => {
                 setFilterStatus(e.target.value);
                 setCurrentPage(1);
               }}
@@ -89,15 +117,23 @@ export default function MyProjectsEmployer() {
           </div>
         </div>
 
-        {paged.length > 0 ? (
+        {listaFiltrada.length === 0 ? (
+          filterStatus === 'Todos' ? (
+            <p className={styles.noProjects}>Nenhum projeto encontrado.</p>
+          ) : (
+            <p className={styles.noProjects}>
+              Você não tem projetos <strong>"{filterStatus}"</strong>.
+            </p>
+          )
+        ) : (
           <>
             <div className={styles.cards}>
-              {paged.map(p => (
+              {paged.map((p) => (
                 <ProjectCard
                   key={p.projectId}
                   project={p}
                   showDropdown
-                  showViewProposals={p.status === 'Aberto'}
+                  showViewProposals={normalize(p.status) === normalize('Aberto')}
                   onEdit={handleEdit}
                   onCancel={handleCancel}
                 />
@@ -111,8 +147,6 @@ export default function MyProjectsEmployer() {
               />
             </div>
           </>
-        ) : (
-          <p className={styles.noProjects}>Nenhum projeto encontrado.</p>
         )}
       </div>
 

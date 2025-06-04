@@ -1,0 +1,95 @@
+/* src/pages/FreelancerProfile/FreelancerProfile.css */
+
+.freelancer-profile-page {
+  font-family: Arial, sans-serif;
+}
+
+.personal-data-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.profile-header h2 {
+  width: 100%;
+  text-align: center;
+  color: #0066ff;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-picture img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #0066ff;
+}
+
+.profile-name h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.profile_form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile_label {
+  font-weight: 500;
+  color: #333;
+}
+
+.profile_input {
+  padding: 12px 15px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #f2f2f2;
+  color: #555555;
+  cursor: not-allowed;
+}
+
+.aboutInput {
+  padding: 12px 15px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #f2f2f2;
+  color: #555;
+  height: 200px;
+  resize: none;
+  cursor: not-allowed;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #0066ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
