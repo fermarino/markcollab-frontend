@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Navbar from '../../components/navbar/Navbar.jsx';
+import Navbar from '../../components/Navbar/Navbar.jsx';
 import './Proposals.css';
 
 const Proposals = () => {

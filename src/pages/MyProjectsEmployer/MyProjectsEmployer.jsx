@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../../components/navbar/Navbar.jsx';
+import Navbar from '../../components/Navbar/Navbar.jsx';
 import Popupcancelar from '../../components/CancelProject/CancelProject.jsx';
 import Pagination from '../../components/Pagination/Pagination.jsx';
 import ProjectCard from '../../components/ProjectCard/ProjectCard.jsx';

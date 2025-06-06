@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
-import Navbar from '../../components/navbar/Navbar.jsx';
+import Navbar from '../../components/Navbar/Navbar.jsx';
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import ProjectCard from '../../components/ProjectCard/ProjectCard.jsx';
 import styles from "./SearchProjects.module.css";

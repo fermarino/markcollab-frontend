@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../../components/navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import SuccessMessage from '../../components/SuccessMessage/SuccessMessage';

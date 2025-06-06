@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Navbar from '../../components/navbar/Navbar.jsx';
+import Navbar from '../../components/Navbar/Navbar.jsx';
 import axios from 'axios';
 import './FreelancerProfile.module.css';
 

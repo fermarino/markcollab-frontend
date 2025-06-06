@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle } from 'react-icons/fa';
-import Navbar from '../../components/navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import BackButton from '../../components/BackButton/BackButton';
 import RegisterSelector from '../../components/RegisterSelector/RegisterSelector';
 import RegisterForm from '../../components/RegisterForm/RegisterForm';

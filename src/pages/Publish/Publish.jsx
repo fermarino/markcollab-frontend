@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Navbar from '../../components/navbar/Navbar.jsx';
+import Navbar from '../../components/Navbar/Navbar.jsx';
 import Input from '../../components/Input/Input.jsx';
 import axios from 'axios';
 import styles from './Publish.module.css';
