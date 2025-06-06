@@ -18,7 +18,7 @@ const FreelancerProfile = () => {
     }
 
     axios
-      .get(`http://localhost:8080/api/freelancers/${cpf}`, {
+      .get(`https://markcollab-backend.onrender.com/api/freelancers/${cpf}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       })
       .then(res => {

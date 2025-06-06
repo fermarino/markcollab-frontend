@@ -26,7 +26,7 @@ export default function MyProjectsEmployer() {
     if (!cpf || !token) return;
 
     axios
-      .get(`http://localhost:8080/api/projects/employer/${cpf}`, {
+      .get(`https://markcollab-backend.onrender.com/api/projects/employer/${cpf}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
@@ -73,7 +73,7 @@ export default function MyProjectsEmployer() {
 
   const confirmCancel = () => {
     axios
-      .delete(`http://localhost:8080/api/projects/${selId}/${cpf}`, {
+      .delete(`https://markcollab-backend.onrender.com/api/projects/${selId}/${cpf}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {

@@ -22,7 +22,7 @@ const MyProjectsFreelancer = () => {
 
     // Chama o endpoint /api/projects/freelancer/{cpf}
     axios
-      .get(`http://localhost:8080/api/projects/freelancer/${cpf}`, {
+      .get(`https://markcollab-backend.onrender.com/api/projects/freelancer/${cpf}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {

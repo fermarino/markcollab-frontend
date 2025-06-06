@@ -19,7 +19,7 @@ const Proposals = () => {
   useEffect(() => {
     if (!projectId || !token) return;
     axios
-      .get(`http://localhost:8080/api/projects/${projectId}`, {
+      .get(`https://markcollab-backend.onrender.com/api/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(res => setProject(res.data))
@@ -30,7 +30,7 @@ const Proposals = () => {
   useEffect(() => {
     if (!projectId || !token) return;
     axios
-      .get(`http://localhost:8080/api/interests/project/${projectId}`, {
+      .get(`https://markcollab-backend.onrender.com/api/interests/project/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(res => {
@@ -53,7 +53,7 @@ const Proposals = () => {
 
     axios
       .post(
-        `http://localhost:8080/api/projects/${projectId}/hire/${freelancerCpf}/${employerCpf}`,
+        `https://markcollab-backend.onrender.com/api/projects/${projectId}/hire/${freelancerCpf}/${employerCpf}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -78,7 +78,7 @@ const Proposals = () => {
     }
     axios
       .put(
-        `http://localhost:8080/api/interests/${interestId}/status`,
+        `https://markcollab-backend.onrender.com/api/interests/${interestId}/status`,
         "Recusado",
         {
           headers: {

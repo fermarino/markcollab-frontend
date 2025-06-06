@@ -16,7 +16,7 @@ export default function SearchProjects() {
   const token        = localStorage.getItem("token");
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/projects/open", token && {
+    axios.get("https://markcollab-backend.onrender.com/api/projects/open", token && {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(({ data }) => {

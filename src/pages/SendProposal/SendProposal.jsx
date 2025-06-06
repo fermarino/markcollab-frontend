@@ -53,7 +53,7 @@ const SendProposal = () => {
         deliveryDate: dataEntrega,
       };
 
-      const response = await fetch("http://localhost:8080/api/interests/", {
+      const response = await fetch("https://markcollab-backend.onrender.com/api/interests/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
