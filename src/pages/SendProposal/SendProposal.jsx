@@ -1,7 +1,7 @@
 // src/pages/SendProposal/SendProposal.jsx
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Navbar from "../../components/navbar/Navbar.jsx";
+import Navbar from "../../components/Navbar/Navbar.jsx";
 import "./SendProposal.css";
 
 const SendProposal = () => {
