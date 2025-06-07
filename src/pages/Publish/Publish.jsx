@@ -41,7 +41,7 @@ export default function Publish() {
 
   const gerarDescricaoIA = () => {
     const { name, specifications, deadline } = project;
-    axios.post('/api/ia/gerar-descricao', { name, specifications, deadline })
+    axios.post('https://fastapi-markcollabia.onrender.com/api/ia/gerar-descricao', { name, specifications, deadline })
       .then(res => {
         const desc = res.data.descricao?.trim();
         if (!desc) throw new Error();
