@@ -81,7 +81,7 @@ export default function Publish() {
     const preco = parseFloat(
       project.projectPrice.replace(/[R$.]/g,'').replace(',','.')
     );
-    axios.post(`/api/projects/${cpf}`, {
+    axios.post(`https://fastapi-markcollabia.onrender.com/api/projects/${cpf}`, {
       projectTitle: project.name,
       projectSpecifications: project.specifications,
       projectDescription: project.description,
