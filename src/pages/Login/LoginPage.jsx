@@ -26,7 +26,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await axios.post('/api/auth/login', { identifier, password });
+      const res = await axios.post('https://markcollab-backend.onrender.com/api/auth/login', { identifier, password });
       const { token, role, cpf } = res.data;
       login(token, role);
       if (cpf) localStorage.setItem('cpf', cpf);
