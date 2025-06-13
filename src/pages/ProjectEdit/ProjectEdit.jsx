@@ -1,9 +1,7 @@
-// src/pages/ProjectEdit/ProjectEdit.jsx
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../../components/Navbar/Navbar.jsx';
 import './ProjectEdit.css';
 
 const ProjectEdit = () => {
@@ -28,7 +26,7 @@ const ProjectEdit = () => {
     }
 
     axios
-      .get(`https://markcollab-backend.onrender.com/api/projects/${id}`, {
+      .get(`http://localhost:8080/api/projects/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then((res) => {
@@ -58,12 +56,11 @@ const ProjectEdit = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Se deadline está vazio string, enviamos null para o backend
     const deadlineParaEnviar = project.deadline.trim() === '' ? null : project.deadline;
 
     axios
       .put(
-        `https://markcollab-backend.onrender.com/api/projects/${id}/${cpf}`,
+        `/api/projects/${id}/${cpf}`,
         {
           projectTitle: project.projectTitle,
           projectDescription: project.projectDescription,
@@ -91,7 +88,6 @@ const ProjectEdit = () => {
 
   return (
     <>
-      <Navbar />
       <div className="project-edit-container">
         <a href="/meusprojetos" className="back-link">&larr; Voltar</a>
         <h2 className="edit-title">Editar projeto</h2>

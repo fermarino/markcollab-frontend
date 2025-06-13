@@ -1,184 +1,130 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Navbar from '../../components/Navbar/Navbar.jsx';
-import './Proposals.css';
+import api from '../../services/api';
+import styles from './Proposals.module.css';
+import {
+  FiArrowLeft, FiCheck, FiX, FiFileText, FiLoader, FiAlertCircle,
+  FiUser, FiDollarSign, FiCalendar
+} from 'react-icons/fi';
+import { AuthContext } from '../../context/AuthContext';
 
-const Proposals = () => {
-  const [project, setProject] = useState(null);
-  const [proposals, setProposals] = useState([]);
+export default function Proposals() {
   const { projectId } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const employerCpf = user?.cpf;
 
-  // Token gerado no login
-  const token = localStorage.getItem('token');
-  // CPF do employer (armazenado no login)
-  const employerCpf = localStorage.getItem('cpf');
+  const [project, setProject] = useState(null);
+  const [proposals, setProposals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // 1) Carrega dados do projeto (título, descrição, etc.)
   useEffect(() => {
-    if (!projectId || !token) return;
-    axios
-      .get(`https://markcollab-backend.onrender.com/api/projects/${projectId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(res => setProject(res.data))
-      .catch(err => console.error('Erro ao carregar projeto:', err));
-  }, [projectId, token]);
+    if (!projectId) return;
 
-  // 2) Carrega as propostas daquele projeto
-  useEffect(() => {
-    if (!projectId || !token) return;
-    axios
-      .get(`https://markcollab-backend.onrender.com/api/interests/project/${projectId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(res => {
-        console.log('RESPOSTA /api/interests/project:', res.data);
-        setProposals(res.data);
-      })
-      .catch(err => console.error('Erro ao carregar propostas:', err));
-  }, [projectId, token]);
+    setLoading(true);
+    Promise.all([
+      api.get(`/projects/${projectId}`),
+      api.get(`/interests/project/${projectId}`)
+    ])
+    .then(([pRes, iRes]) => {
+      setProject(pRes.data);
+      setProposals(Array.isArray(iRes.data) ? iRes.data : []);
+    })
+    .catch(err => {
+      console.error("Falha ao carregar dados:", err);
+      setError('Falha ao carregar dados do projeto.');
+    })
+    .finally(() => setLoading(false));
+  }, [projectId]);
 
-  // 3) Aceitar proposta → POST /api/projects/{projectId}/hire/{freelancerCpf}/{employerCpf}
-  const aceitarProposta = (freelancerCpf) => {
-    if (!freelancerCpf) {
-      alert('CPF do freelancer indefinido');
+  const handleAccept = async (freelancerCpf) => {
+    if (!projectId || !freelancerCpf || !employerCpf) {
+      setError('Não foi possível realizar a contratação. Faltam informações.');
       return;
     }
-    if (!employerCpf) {
-      alert('CPF do empregador não encontrado. Faça login novamente.');
-      return;
+    try {
+      await api.post(`/projects/${projectId}/hire/${freelancerCpf}/${employerCpf}`);
+      navigate('/contratante/meus-projetos');
+    } catch {
+      setError('Não foi possível aceitar a proposta.');
     }
-
-    axios
-      .post(
-        `https://markcollab-backend.onrender.com/api/projects/${projectId}/hire/${freelancerCpf}/${employerCpf}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      .then(() => {
-        alert('Proposta aceita! Projeto movido para "Em andamento".');
-        // Redireciona para a lista de projetos do empregador
-        navigate('/meusprojetos');
-      })
-      .catch(err => {
-        console.error('Erro ao aceitar proposta:', err);
-        // Exibe, quando possível, a mensagem retornada pelo backend
-        const mensagem = err.response?.data || err.message;
-        alert(`Erro ao aceitar proposta: ${mensagem}`);
-      });
   };
 
-  // 4) Recusar proposta → PUT /api/interests/{interestId}/status
-  const rejeitarProposta = (interestId) => {
-    if (!interestId) {
-      alert('ID da proposta indefinido');
-      return;
-    }
-    axios
-      .put(
-        `https://markcollab-backend.onrender.com/api/interests/${interestId}/status`,
-        "Recusado",
-        {
-          headers: {
-            'Content-Type': 'text/plain',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then(() => {
-        // Atualiza localmente o status para “Recusado”, sem recarregar tudo
-        setProposals(prev =>
-          prev.map(p =>
-            p.id === interestId
-              ? { ...p, status: "Recusado" }
-              : p
-          )
-        );
-      })
-      .catch(err => {
-        console.error('Erro ao recusar proposta:', err);
-        const mensagem = err.response?.data || err.message;
-        alert(`Erro ao recusar proposta: ${mensagem}`);
+  const handleReject = async (interestId) => {
+    try {
+      await api.put(`/interests/${interestId}/status`, 'Recusado', {
+        headers: { 'Content-Type': 'text/plain' }
       });
+      setProposals(ps => ps.map(p => p.id === interestId ? { ...p, status: 'Recusado' } : p));
+    } catch {
+      setError('Não foi possível recusar a proposta.');
+    }
   };
 
-  if (!project) return <div>Carregando...</div>;
+  if (loading) {
+    return (
+      <div className={styles.pageWrapper}>
+        <div className={styles.loadingState}><FiLoader className={styles.spinIcon} /> Carregando...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="proposta-container">
-      <Navbar />
+    <div className={styles.pageWrapper}>
+      <div className={styles.container}>
+        <Link to="/contratante/meus-projetos" className={styles.btnBack}>
+          <FiArrowLeft /> Voltar para Meus Projetos
+        </Link>
+        {error && <div className={styles.errorBanner}><FiAlertCircle /> {error}</div>}
 
-      <div className="proposta-content">
-        <Link to="/meusprojetos" className="back-link">&larr; Voltar</Link>
+        {project && <h1 className={styles.projectTitle}>Propostas para: "{project.projectTitle}"</h1>}
 
-        <div className="proposta-details">
-          <h2 className="proposta-project-title">{project.projectTitle}</h2>
-          <p><strong>Descrição:</strong> {project.projectDescription}</p>
-          <p><strong>Especificações:</strong> {project.projectSpecifications}</p>
-          <p><strong>Prazo:</strong> {project.deadline}</p>
-          <p>
-            <strong>Preço:</strong> R$ {project.projectPrice?.toLocaleString('pt-BR', {
-              minimumFractionDigits: 2,
-            })}
-          </p>
-        </div>
-
-        <div className="proposta-proposals">
-          <h3 className="proposta-section-title">Propostas Recebidas</h3>
-
-          {proposals.length === 0 ? (
-            <div className="no-proposals-msg">
-              <p>Nenhuma proposta recebida ainda.</p>
-            </div>
-          ) : (
-            <div className="cards-wrapper">
-              {proposals.map((p) => (
-                <div key={p.id} className="card-proposta">
-                  {/* Exibe nome do freelancer ou “— Sem nome —” se estiver ausente */}
-                  <h4 className="proposta-freelancer-name">
-                    {p.freelancerName || "— Sem nome —"}
-                  </h4>
-
-                  <p><strong>Descrição:</strong> {p.proposalDescription}</p>
-                  <p><strong>Valor:</strong> R$ {p.proposalValue}</p>
-                  <p><strong>Entrega:</strong> {p.deliveryDate}</p>
-                  <p><strong>Status:</strong> {p.status}</p>
-
-                  <div className="proposta-buttons">
-                    <button
-                      className="proposta-button proposta-accept"
-                      onClick={() => aceitarProposta(p.freelancerCpf)}
-                      disabled={p.status !== "Aguardando resposta"}
-                    >
-                      Aceitar
-                    </button>
-
-                    <button
-                      className="proposta-button proposta-reject"
-                      onClick={() => rejeitarProposta(p.id)}
-                      disabled={p.status !== "Aguardando resposta"}
-                    >
-                      Recusar
-                    </button>
-
-                    {/* Link para visualizar perfil de freelancer */}
-                    <Link
-                      to={`/perfilfreelancer/${p.freelancerCpf}`}
-                      className="ver-perfil-btn"
-                    >
-                      Ver perfil
-                    </Link>
-                  </div>
+        {proposals.length > 0 ? (
+          <div className={styles.proposalsGrid}>
+            {proposals.map(p => (
+              <div key={p.id} className={styles.proposalCard}>
+                <div className={styles.cardHeader}>
+                  <h3 className={styles.freelancerName}>{p.freelancerName}</h3>
+                  <span className={`${styles.statusBadge} ${styles[p.status.toLowerCase().replace(/\s+/g, '')]}`}>
+                    {p.status}
+                  </span>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+                <div className={styles.cardBody}>
+                  <div className={styles.proposalMeta}>
+                    <span><FiDollarSign /> {Number(p.proposalValue).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                    <span><FiCalendar /> {new Date(p.deliveryDate).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</span>
+                  </div>
+                  <blockquote className={styles.proposalDescription}>
+                    {p.proposalDescription}
+                  </blockquote>
+                </div>
+                <div className={styles.cardActions}>
+                  <Link to={`/perfis/${p.freelancerCpf}`} className={styles.btnProfile}>
+                    <FiUser /> Ver Perfil
+                  </Link>
+                  {p.status.toLowerCase() === 'aguardando resposta' && (
+                    <div className={styles.actionButtons}>
+                      <button onClick={() => handleReject(p.id)} className={styles.btnReject}>
+                        <FiX /> Rejeitar
+                      </button>
+                      <button onClick={() => handleAccept(p.freelancerCpf)} className={styles.btnAccept}>
+                        <FiCheck /> Aceitar
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.emptyState}>
+            <FiFileText className={styles.emptyStateIcon} />
+            <h3>Nenhuma proposta recebida</h3>
+            <p>Quando freelancers demonstrarem interesse, as propostas aparecerão aqui.</p>
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default Proposals;
+}

@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import Navbar from '../../components/Navbar/Navbar.jsx';
 import SubNavbar from '../../components/SubNavbar/SubNavbar';
 import './Profile.css';
 
@@ -103,7 +102,6 @@ const Profile = () => {
 
   return (
     <>
-      <Navbar />
       <SubNavbar />
       <div className="personal-data-container">
         <div className="profile-header">

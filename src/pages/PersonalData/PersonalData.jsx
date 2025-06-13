@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../../components/Navbar/Navbar';
 import SubNavbar from '../../components/SubNavbar/SubNavbar';
 import './PersonalData.css';
 
@@ -68,7 +67,6 @@ const PersonalData = () => {
 
   return (
     <>
-      <Navbar />
       <SubNavbar />
       <div className="personal-data-container">
         <h2>Editar Dados</h2>

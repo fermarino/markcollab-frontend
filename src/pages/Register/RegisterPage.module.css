@@ -1,189 +1,320 @@
-/* src/pages/RegisterPage/RegisterPage.module.css */
+/* ========================================
+   REGISTER PAGE - CSS OTIMIZADO
+   ======================================== */
 
-/* === DESKTOP === */
-.page {
+.pageWrapper {
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 120px); /* ajuste conforme seu navbar */
-  background-color: #ffffff;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--color-light-bg, #f8fafc);
   padding: 1rem;
   box-sizing: border-box;
 }
 
-.card {
-  display: flex;
+.registerCard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   width: 100%;
-  max-width: 1200px;
-  min-height: 700px;
-  border-radius: 6px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  max-width: 1000px;
+  min-height: 650px;
+  background-color: var(--color-white, #ffffff);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   overflow: hidden;
-  transition: all 0.3s ease;
+  position: relative;
 }
 
-/* coluna azul */
-.leftSide {
-  position: relative;
-  flex: 1;
-  background-color: #007aff;
+/* ========================================
+   INFO PANEL (LADO ESQUERDO)
+   ======================================== */
+
+.infoPanel {
+  background: linear-gradient(135deg, var(--color-primary, #2c65f6), var(--color-primary-dark, #1e40af));
   color: #ffffff;
+  padding: 3rem 2.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem;
+  position: relative;
 }
 
-/* Botão voltar — **desktop** sempre branco */
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  max-width: 400px;
+}
+
 .backButton {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  background: transparent;
-  border: none;
-  color: #ffffff;     /* branco no desktop */
-  font-size: 1rem;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 50px;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  cursor: pointer;
-  z-index: 10;
-}
-.backButton:hover {
-  opacity: 0.8;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
 }
 
-.blueInner {
-  text-align: center;
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
 }
-.blueInner h2 {
-  font-size: 1.75rem;
+
+.logo {
+  max-width: 160px;
+  height: auto;
+  margin-bottom: 2rem;
+  filter: brightness(0) invert(1);
+}
+
+.infoIcon {
+  background-color: rgba(255, 255, 255, 0.15);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1.5rem;
-  color: #ffffff !important;
+  backdrop-filter: blur(10px);
 }
-.blueInner ul {
+
+.title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin: 0;
+  font-weight: 400;
+}
+
+.bulletList {
   list-style: none;
   padding: 0;
-  margin: 0;
-}
-.blueInner li {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  color: #ffffff;
-}
-.checkIcon {
-  font-size: 1.2rem;
-  color: #ffffff;
+  margin: 2rem 0 0 0;
 }
 
-/* coluna branca */
-.rightSide {
-  flex: 1;
-  background-color: #ffffff;
+.bulletList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.bulletList li:last-child {
+  margin-bottom: 0;
+}
+
+.bulletList li svg {
+  color: #4ade80;
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: 1rem;
+}
+
+/* ========================================
+   FORM PANEL (LADO DIREITO)
+   ======================================== */
+
+.formPanel {
+  padding: 3rem 2.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 2rem;
-  transition: opacity 0.4s ease-out;
+  background-color: var(--color-white, #ffffff);
+  position: relative;
 }
 
-.fadeIn {
-  animation: fadeIn 0.4s ease-out;
+.formContainer {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.formTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.formTitle strong {
+  color: var(--color-primary, #2c65f6);
 }
 
 .loginLink {
-  margin-top: 1rem;
-  font-size: 0.875rem;
-  color: #4b5563;
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 400;
 }
+
 .loginLink a {
-  color: #007aff;
+  color: var(--color-primary, #2c65f6);
+  font-weight: 600;
   text-decoration: none;
+  transition: color 0.2s ease;
 }
+
 .loginLink a:hover {
+  color: var(--color-primary-dark, #1e40af);
   text-decoration: underline;
 }
 
-/* === MOBILE === */
+.mobileBackButton {
+  display: none;
+}
+
+/* ========================================
+   RESPONSIVE - TABLET
+   ======================================== */
+
 @media (max-width: 768px) {
-  /* esconde desktop */
-  .page {
-    position: relative;
+  .pageWrapper {
     padding: 0;
-    background: none;
-  }
-  .card {
-    display: none;
+    background-color: var(--color-white, #ffffff);
+    align-items: flex-start;
   }
 
-  /* tela de seleção azul */
-  .mobileBlue {
+  .registerCard {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .infoPanel {
+    display: none; /* Esconde completamente no mobile */
+  }
+
+  .formPanel {
+    padding: 2rem 1.5rem;
+    min-height: 100vh;
+    justify-content: flex-start;
+    padding-top: 4rem;
+  }
+
+  .mobileBackButton {
     position: absolute;
-    top: 120px;    /* ajuste conforme navbar */
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #007aff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .mobileBlue::-webkit-scrollbar { display: none; }
-
-  /* tela de formulário branca */
-  .mobileForm {
-    position: absolute;
-    top: 120px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ffffff;
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-y: auto;
-  }
-
-  /* no mobile, BackButton fica preto */
-  .mobileForm .backButton {
-    align-self: flex-start;
-    margin-bottom: 1rem;
-    color: #111827;  /* texto preto no form mobile */
-  }
-
-  /* botão Cadastrar no mobile */
-  .mobileForm button[type="submit"] {
-    margin-top: 1.5rem;
-    padding: 0.75rem 2rem;
-    background-color: #007aff;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
+    top: 1rem;
+    left: 1rem;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 0.75rem 1rem;
+    border-radius: 50px;
     cursor: pointer;
-    width: 100%;
-    max-width: 360px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    z-index: 10;
   }
-  .mobileForm button[type="submit"]:hover {
-    opacity: 0.9;
+
+  .mobileBackButton:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+  }
+
+  .formTitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
   }
 }
 
-/* animação de fadeIn */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
+/* ========================================
+   RESPONSIVE - MOBILE
+   ======================================== */
+
+@media (max-width: 480px) {
+  .formPanel {
+    padding: 1.5rem 1rem;
+    padding-top: 4rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .mobileBackButton {
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.85rem;
+  }
+
+  .formTitle {
+    font-size: 1.375rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .formContainer {
+    max-width: 100%;
+  }
+}
+
+/* ========================================
+   RESPONSIVE - MOBILE PEQUENO
+   ======================================== */
+
+@media (max-width: 360px) {
+  .formPanel {
+    padding: 1rem 0.75rem;
+    padding-top: 3.5rem;
+  }
+
+  .mobileBackButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .formTitle {
+    font-size: 1.25rem;
+  }
+}
+
+/* ========================================
+   LANDSCAPE - MOBILE
+   ======================================== */
+
+@media (max-height: 600px) and (orientation: landscape) and (max-width: 768px) {
+  .formPanel {
+    padding: 1rem 1.5rem;
+    padding-top: 3rem;
+    justify-content: center;
+  }
+
+  .formTitle {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .mobileBackButton {
+    top: 0.5rem;
+    left: 0.5rem;
   }
 }

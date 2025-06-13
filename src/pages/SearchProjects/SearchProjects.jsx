@@ -1,103 +1,106 @@
-// src/pages/SearchProjects/SearchProjects.jsx
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
-import Navbar from '../../components/Navbar/Navbar.jsx';
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import ProjectCard from '../../components/ProjectCard/ProjectCard.jsx';
 import styles from "./SearchProjects.module.css";
+import { FiXCircle } from "react-icons/fi";
 
 export default function SearchProjects() {
-  const [projetos, setProjetos]   = useState([]);
-  const [busca, setBusca]         = useState("");
+  const [projetos, setProjetos] = useState([]);
+  const [busca, setBusca] = useState("");
   const [filtrados, setFiltrados] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
-  const token        = localStorage.getItem("token");
+  const [loading, setLoading] = useState(true);
+  const itemsPerPage = 5;
+  
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    axios.get("https://markcollab-backend.onrender.com/api/projects/open", token && {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    axios.get("/api/projects/open", { headers: { Authorization: `Bearer ${token}` } })
     .then(({ data }) => {
-      // Filtra apenas os projetos com status "Aberto"
       const abertos = data.filter(p => p.status === "Aberto");
       setProjetos(abertos);
       setFiltrados(abertos);
+      setLoading(false);
     })
-    .catch(() => alert("Erro ao carregar os projetos."));
+    .catch(() => {
+        setLoading(false);
+        // Idealmente, tratar o erro de forma mais visual
+    });
   }, [token]);
 
-  const handleBuscaChange = e => {
-    const txt = e.target.value.toLowerCase();
-    setBusca(txt);
+  useEffect(() => {
+    const txt = busca.toLowerCase();
     setCurrentPage(1);
     setFiltrados(projetos.filter(p =>
       p.projectTitle.toLowerCase().includes(txt) ||
       p.projectSpecifications.toLowerCase().includes(txt)
     ));
-  };
+  }, [busca, projetos]);
+
 
   const totalPages = Math.ceil(filtrados.length / itemsPerPage);
-  const start      = (currentPage - 1) * itemsPerPage;
-  const paged      = filtrados.slice(start, start + itemsPerPage);
+  const paged = filtrados.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  if (loading) {
+      return (
+          <div className={styles.pageWrapper}>
+              <div className={styles.loadingState}>Buscando projetos...</div>
+          </div>
+      );
+  }
 
   return (
-    <>
-      <Navbar />
+    <div className={styles.pageWrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1 className={styles.title}>Buscar projetos</h1>
-          <p className={styles.subtitle}>Encontre os melhores projetos para você</p>
+          <h1 className={styles.title}>Encontre o Projeto Perfeito</h1>
+          <p className={styles.subtitle}>Explore dezenas de oportunidades e dê o próximo passo na sua carreira.</p>
         </div>
 
         <div className={styles.searchBar}>
+          <FaSearch className={styles.searchIcon}/>
           <input
             type="text"
             className={styles.searchInput}
-            placeholder="Pesquise por título, área..."
+            placeholder="Pesquise por título, tecnologia, área..."
             value={busca}
-            onChange={handleBuscaChange}
+            onChange={(e) => setBusca(e.target.value)}
           />
-          <button className={styles.searchButton}><FaSearch /></button>
         </div>
 
         {paged.length > 0 ? (
           <>
-            <div className={styles.cards}>
+            <div className={styles.cardsGrid}>
               {paged.map(proj => (
                 <ProjectCard
                   key={proj.projectId}
-                  project={{
-                    projectId: proj.projectId,
-                    projectTitle: proj.projectTitle,
-                    projectDescription: proj.projectDescription,
-                    projectSpecifications: proj.projectSpecifications,
-                    deadline: proj.deadline,
-                    projectPrice: proj.projectPrice,
-                    status: proj.status
-                  }}
+                  project={proj}
+                  showDetailsButton={true}
                   showSendProposal={true}
-                  hideStatus={false}
-                  onSendProposal={id => {
-                    window.location.href = `/fazerproposta/${id}`;
-                  }}
                 />
               ))}
             </div>
 
-            <div className={styles.paginationWrapper}>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </div>
+            {totalPages > 1 && (
+              <div className={styles.paginationWrapper}>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
           </>
         ) : (
-          <p className={styles.noProjects}>Nenhum projeto encontrado.</p>
+          <div className={styles.emptyState}>
+            <FiXCircle className={styles.emptyStateIcon} />
+            <h3>Nenhum projeto encontrado</h3>
+            <p>Não encontramos nenhum projeto com os termos da sua busca. Tente outras palavras-chave.</p>
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
