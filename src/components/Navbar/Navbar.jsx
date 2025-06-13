@@ -1,78 +1,146 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
-import { FaFacebookF, FaInstagram } from 'react-icons/fa';
-import { MdEmail } from 'react-icons/md';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import './Navbar.css';
-import MainLogo from '../../assets/img/logo_markcollab.png';
+import MainLogo from '../../assets/img/logo_markcollab.png'; 
 import { AuthContext } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 
 const Navbar = () => {
-  const { isLoggedIn, role } = useContext(AuthContext);
+  const { isAuthenticated, user, logout } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userRole, setUserRole] = useState(role);
-
-  useEffect(() => setUserRole(role), [role]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const { addToast } = useToast();
 
   const toggleSidebar = () => setSidebarOpen(o => !o);
   const closeSidebar = () => setSidebarOpen(false);
 
-  const getProjetos = () =>
-    userRole === 'freelancer' ? '/meusprojetosfreelancer' : '/meusprojetos';
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    addToast('info', 'Você foi desconectado.');
+    setDropdownOpen(false);
+    closeSidebar();
+    navigate('/login');
+  };
+
+  const getProjectsPath = () => {
+    if (!user) return '/login';
+    return user.role === 'FREELANCER' ? '/freelancer/meus-projetos' : '/contratante/meus-projetos';
+  };
+
+  const NavLink = ({ to, children, className, onClick }) => (
+    <li className={className}>
+      <Link to={to} onClick={() => { closeSidebar(); onClick?.(); }}>{children}</Link>
+    </li>
+  );
+
+  const isFreelancer = user?.role === 'FREELANCER';
 
   return (
     <>
-      <div className="topbar">
-        <div className="topbar-left">
-          <FaFacebookF />
-          <FaInstagram />
-        </div>
-        <div className="topbar-right">
-          <MdEmail size={18} />
-          <span>atendimentomarkcollab@gmail.com</span>
-        </div>
-      </div>
-      <nav className="main-navbar">
-        <div className="navbar-content">
-          <Link to="/" className="logo">
+      <header className="main-header">
+        <div className="header-content">
+          <Link to="/" className="logo" onClick={closeSidebar}>
             <img src={MainLogo} alt="MarkCollab Logo" />
           </Link>
-          <ul className="nav-links">
-            <li><Link to="/">Home</Link></li>
-            {!isLoggedIn && <>
-              <li><Link to="/sobre">Sobre</Link></li>
-              <li><Link to="/servicos">Serviços</Link></li>
-            </>}
-            {isLoggedIn ? <>
-              <li><Link to={getProjetos()}>Projetos</Link></li>
-              <li><Link to="/perfil">Conta</Link></li>
-            </> : <>
-              <li><Link to="/login" className="btn outlined">Login</Link></li>
-              <li><Link to="/cadastro" className="btn outlined">Cadastro</Link></li>
-            </>}
-          </ul>
-          <button className="menu-btn" onClick={toggleSidebar}>
-            {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+
+          <nav className="desktop-nav">
+            <ul className="nav-links">
+              <NavLink to="/home">Home</NavLink>
+              {!isAuthenticated && (
+                <>
+                  <NavLink to="/sobre">Sobre</NavLink>
+                  <NavLink to="/servicos">Serviços</NavLink>
+                </>
+              )}
+              {isAuthenticated && (
+                <>
+                  <NavLink to={getProjectsPath()}>Meus Projetos</NavLink>
+                  {isFreelancer && <NavLink to="/buscar-projetos">Buscar Projetos</NavLink>}
+                </>
+              )}
+            </ul>
+          </nav>
+
+          <div className="nav-actions">
+            {isAuthenticated ? (
+              <div className="profile-menu" ref={dropdownRef}>
+                <button onClick={() => setDropdownOpen(o => !o)} className="profile-btn">
+                  <User size={20} />
+                  <span>Olá, {user?.name?.split(' ')[0] || 'Usuário'}</span>
+                </button>
+                {dropdownOpen && (
+                  <ul className="dropdown">
+                    <NavLink to="/perfil" onClick={() => setDropdownOpen(false)}>
+                        <Settings size={16}/> Minha Conta
+                    </NavLink>
+                    {/* AJUSTADO: O wrapper do item de logout foi simplificado */}
+                    <li onClick={handleLogout} className="logout-item-wrapper">
+                      <div className="logout-item"><LogOut size={16}/> Sair</div>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            ) : (
+              <div className="auth-buttons">
+                <Link to="/login" className="btn-login">Login</Link>
+                <Link to="/cadastro" className="btn-register">Cadastro</Link>
+              </div>
+            )}
+            <button className="menu-btn" onClick={toggleSidebar}>
+              {sidebarOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
         </div>
-        <div className={`sidebar ${sidebarOpen ? 'open' : ''}`} onClick={closeSidebar}>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            {!isLoggedIn && <>
-              <li><Link to="/sobre">Sobre</Link></li>
-              <li><Link to="/servicos">Serviços</Link></li>
-            </>}
-            {isLoggedIn ? <>
-              <li><Link to={getProjetos()}>Projetos</Link></li>
-              <li><Link to="/notificacoes">Notificações</Link></li>
-              <li><Link to="/perfil">Perfil</Link></li>
-            </> : <>
-              <li><Link to="/login">Login</Link></li>
-              <li><Link to="/cadastro">Cadastro</Link></li>
-            </>}
+      </header>
+
+      <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-content" onClick={(e) => e.stopPropagation()}>
+          <ul className="sidebar-links">
+            {isAuthenticated && (
+              <li className="sidebar-user-info">
+                <User size={22} />
+                <span>Olá, {user?.name?.split(' ')[0] || 'Usuário'}</span>
+              </li>
+            )}
+            <hr />
+            <NavLink to="/home">Home</NavLink>
+            {!isAuthenticated ? (
+              <>
+                <NavLink to="/sobre">Sobre</NavLink>
+                <NavLink to="/servicos">Serviços</NavLink>
+                <hr />
+                {/* AJUSTADO: Botões de login/cadastro agrupados */}
+                <li className="sidebar-auth-actions">
+                  <Link to="/login" className="sidebar-btn-login" onClick={closeSidebar}>Login</Link>
+                  <Link to="/cadastro" className="sidebar-btn-register" onClick={closeSidebar}>Cadastro</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <NavLink to={getProjectsPath()}>Meus Projetos</NavLink>
+                {isFreelancer && <NavLink to="/buscar-projetos">Buscar Projetos</NavLink>}
+                <NavLink to="/perfil">Minha Conta</NavLink>
+                <hr/>
+                <li onClick={handleLogout} className="sidebar-logout">Sair</li>
+              </>
+            )}
           </ul>
         </div>
-      </nav>
+        <div className="sidebar-overlay" onClick={closeSidebar}></div>
+      </div>
     </>
   );
 };

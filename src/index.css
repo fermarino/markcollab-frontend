@@ -1,23 +1,35 @@
-/* reset básico */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Cores e variáveis */
+  --color-primary: #2C65F6;
+  --color-primary-dark: #1E4BBE;
+  --color-light-bg: #f8f9fa;
+  --color-white: #ffffff;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 * {
+  box-sizing: border-box;
+}
+
+html, body, #root {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;   /* impede qualquer scroll horizontal */
 }
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #f7f9fc;;
-  color: #111827;         
+  background-color: var(--color-light-bg);
+  color: #4a5568;
 }
 
-:root {
-  --primary: #1a73e8;
-  --white: #ffffff;
-  --gray-light: #f5f5f5;
-  --error: #e53935;
-  --border-radius: 8px;
-  --transition: all 0.3s ease;
+.main-content-area {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 1rem;      /* reduzido para não estourar */
+  box-sizing: border-box;
+  overflow-x: hidden;   /* reforço contra overflow */
 }
-
-
