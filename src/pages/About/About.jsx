@@ -1,6 +1,5 @@
 import React from 'react'
 import './About.css'
-import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import meeting from '../../assets/img/meeting.png'
 import maos from '../../assets/img/maos.png'
@@ -8,7 +7,6 @@ import maos from '../../assets/img/maos.png'
 const About = () => {
   return (
     <div>
-        <Navbar />
         <div className='sobre_container'>
             <div className='sobre_div1'>
                 <div className='sobre_subDiv1'>

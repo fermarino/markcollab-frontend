@@ -1,42 +1,64 @@
-import { createContext, useEffect, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import api from '../services/api';
 
-export const AuthContext = createContext();
+export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
-  const [role, setRole] = useState(null);
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const roleFromStorage = localStorage.getItem('role');
-
-    if (token && roleFromStorage) {
-      setIsLoggedIn(true);
-      setRole(roleFromStorage);
-    } else {
-      setIsLoggedIn(false);
-      setRole(null);
+    if (!token) {
+      setLoading(false);
+      return;
     }
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    api.get('/user/me')
+      .then(({ data }) => {
+        setUser(data);
+        localStorage.setItem('cpf', data.cpf);
+        setIsAuth(true);
+      })
+      .catch(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('cpf'); 
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  const login = (token, role) => {
+
+  const login = async (token) => {
     localStorage.setItem('token', token);
-    localStorage.setItem('role', role.toLowerCase());
-    setIsLoggedIn(true);
-    setRole(role.toLowerCase());
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    try {
+      const { data } = await api.get('/user/me');
+      setUser(data);
+      localStorage.setItem('cpf', data.cpf); 
+      setIsAuth(true);
+    } catch {
+      localStorage.removeItem('token');
+      localStorage.removeItem('cpf'); 
+      setUser(null);
+      setIsAuth(false);
+    }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('cpf');
-    setIsLoggedIn(false);
-    setRole(null);
+    localStorage.removeItem('cpf'); 
+
+    setUser(null);
+    setIsAuth(false);
+    
+    // Redireciona para garantir um estado limpo.
+    window.location.href = '/login';
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, role, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, logout }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
