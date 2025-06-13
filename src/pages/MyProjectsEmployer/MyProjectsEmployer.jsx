@@ -1,96 +1,83 @@
-// src/pages/MyProjectsEmployer/MyProjectsEmployer.jsx
-
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Navbar from '../../components/Navbar/Navbar.jsx';
-import Popupcancelar from '../../components/CancelProject/CancelProject.jsx';
-import Pagination from '../../components/Pagination/Pagination.jsx';
-import ProjectCard from '../../components/ProjectCard/ProjectCard.jsx';
-import styles from './MyProjectsEmployer.module.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../../services/api";  // usa api, não axios
+import Popupcancelar from "../../components/CancelProject/CancelProject.jsx";
+import Pagination from "../../components/Pagination/Pagination.jsx";
+import ProjectCard from "../../components/ProjectCard/ProjectCard.jsx";
+import styles from "./MyProjectsEmployer.module.css";
+import { useToast } from "../../context/ToastContext.jsx";
+import { FiLoader } from "react-icons/fi";
 
 export default function MyProjectsEmployer() {
-  const [projetos, setProjetos] = useState([]);
-  const [filterStatus, setFilterStatus] = useState('Todos');
+  const [projetos, setProjetos]       = useState([]);
+  const [loading, setLoading]         = useState(true);
+  const [filterStatus, setFilterStatus] = useState("Todos");
   const [popupVisivel, setPopupVisivel] = useState(false);
-  const [selId, setSelId] = useState(null);
+  const [selId, setSelId]             = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
+  const itemsPerPage                  = 3;
 
-  const cpf = localStorage.getItem('cpf');
-  const token = localStorage.getItem('token');
-  const navigate = useNavigate();
+  const { addToast } = useToast();
+  const cpf          = localStorage.getItem("cpf");
+  const navigate     = useNavigate();
 
-  // 1) Carrega TODOS os projetos do empregador (área “Empregador”)
   useEffect(() => {
-    if (!cpf || !token) return;
+    if (!cpf) {
+      addToast("error", "Você precisa estar logado para ver seus projetos.");
+      return setLoading(false);
+    }
 
-    axios
-      .get(`https://markcollab-backend.onrender.com/api/projects/employer/${cpf}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(({ data }) => {
-        console.log('Projetos recebidos do backend:', data);
-        setProjetos(data || []);
-      })
-      .catch((err) => {
-        console.error('Erro ao carregar projetos:', err);
-        alert('Erro ao carregar projetos.');
+    setLoading(true);
+    api.get(`/projects/employer/${cpf}`)
+      .then(({ data }) => setProjetos(Array.isArray(data) ? data : []))
+      .catch(err => {
+        console.error("Erro ao buscar projetos (Contratante):", err);
+        addToast("error", "Não foi possível carregar seus projetos.");
         setProjetos([]);
-      });
-  }, [cpf, token]);
+      })
+      .finally(() => setLoading(false));
+  }, [cpf, addToast]);
 
-  // Função para normalizar string de status
-  const normalize = (str) => (str || '').trim().toLowerCase();
-
-  // 2) Filtra localmente pelo status selecionado
+  const normalize = str => (str || "").trim().toLowerCase();
   const listaFiltrada =
-    filterStatus === 'Todos'
+    filterStatus === "Todos"
       ? projetos
-      : projetos.filter(
-          (p) => normalize(p.status) === normalize(filterStatus)
-        );
+      : projetos.filter(p => normalize(p.status) === normalize(filterStatus));
 
-  console.log(
-    'FilterStatus:', filterStatus,
-    '| Projetos filtrados:',
-    JSON.stringify(listaFiltrada)
-  );
-
-  // 3) Paginação local: exibe apenas 3 itens por página
   const totalPages = Math.ceil(listaFiltrada.length / itemsPerPage);
-  const paged = listaFiltrada.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const paged      = listaFiltrada.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const handleEdit = (id) => navigate(`/editarprojeto/${id}`);
-
-  const handleCancel = (id) => {
+  const handleEdit   = id => navigate(`/projetos/${id}/editar`);
+  const handleCancel = id => {
     setSelId(id);
     setPopupVisivel(true);
   };
-
   const confirmCancel = () => {
-    axios
-      .delete(`https://markcollab-backend.onrender.com/api/projects/${selId}/${cpf}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    api.delete(`/projects/${selId}/${cpf}`)
       .then(() => {
-        setProjetos((prev) => prev.filter((x) => x.projectId !== selId));
+        setProjetos(prev => prev.filter(x => x.projectId !== selId));
+        addToast("success", "Projeto cancelado com sucesso.");
         setPopupVisivel(false);
       })
-      .catch((err) => {
-        console.error('Erro ao cancelar projeto:', err);
-        alert('Erro ao cancelar projeto.');
+      .catch(err => {
+        console.error("Erro ao cancelar projeto:", err);
+        addToast("error", "Erro ao cancelar o projeto.");
         setPopupVisivel(false);
       });
   };
 
+  if (loading) {
+    return (
+      <div className={styles.pageWrapper}>
+        <div className={styles.loadingState}>
+          <FiLoader className={styles.loaderIcon} /> Carregando...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.pageWrapper}>
-      <Navbar />
-
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>Meus Projetos</h1>
@@ -98,7 +85,7 @@ export default function MyProjectsEmployer() {
             <select
               className={styles.selectStatus}
               value={filterStatus}
-              onChange={(e) => {
+              onChange={e => {
                 setFilterStatus(e.target.value);
                 setCurrentPage(1);
               }}
@@ -108,54 +95,40 @@ export default function MyProjectsEmployer() {
               <option>Em andamento</option>
               <option>Concluído</option>
             </select>
-            <Link
-              to="/publicar"
-              className={`${styles.btn} ${styles.primary} ${styles.btnPublish}`}
-            >
+            <Link to="/contratante/publicar-projeto" className={`${styles.btn} ${styles.primary} ${styles.btnPublish}`}>
               Publicar Projeto
             </Link>
           </div>
         </div>
 
-        {listaFiltrada.length === 0 ? (
-          filterStatus === 'Todos' ? (
-            <p className={styles.noProjects}>Nenhum projeto encontrado.</p>
-          ) : (
-            <p className={styles.noProjects}>
-              Você não tem projetos <strong>"{filterStatus}"</strong>.
-            </p>
-          )
-        ) : (
+        {paged.length > 0 ? (
           <>
             <div className={styles.cards}>
-              {paged.map((p) => (
+              {paged.map(p => (
                 <ProjectCard
                   key={p.projectId}
                   project={p}
-                  showDropdown
-                  showViewProposals={normalize(p.status) === normalize('Aberto')}
-                  onEdit={handleEdit}
-                  onCancel={handleCancel}
+                  userRole="employer"
+                  showDropdown={normalize(p.status) === "aberto"}
+                  showViewProposals={normalize(p.status) === "aberto"}
+                  showDetailsButton={true}
+                  onEdit={() => handleEdit(p.projectId)}
+                  onCancel={() => handleCancel(p.projectId)}
                 />
               ))}
             </div>
             <div className={styles.paginationWrapper}>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage}/>
             </div>
           </>
+        ) : (
+          <p className={styles.noProjects}>
+            Nenhum projeto encontrado com o filtro "{filterStatus}".
+          </p>
         )}
       </div>
 
-      {popupVisivel && (
-        <Popupcancelar
-          onClose={() => setPopupVisivel(false)}
-          onConfirm={confirmCancel}
-        />
-      )}
+      {popupVisivel && <Popupcancelar onClose={() => setPopupVisivel(false)} onConfirm={confirmCancel}/>}
     </div>
   );
 }

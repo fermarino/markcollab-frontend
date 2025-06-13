@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from '../../components/Navbar/Navbar.jsx'
 import Footer from '../../components/Footer/Footer.jsx'
 import './Home.css'
 import img1 from '../../assets/img/meeting.png'
@@ -10,7 +9,6 @@ import img2 from '../../assets/img/fOTO.png'
 const Home = () => {
   return (
     <div>
-      <Navbar />
       <div className='home_container'>
         <div className='home_div1'>
           <div className='home_div1_1'>

@@ -1,107 +1,79 @@
 // src/pages/MyProjectsFreelancer/MyProjectsFreelancer.jsx
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../../components/Navbar/Navbar.jsx";
-import axios from "axios";
-import "./MyProjectsFreelancer.css";
+import ProjectCard from "../../components/ProjectCard/ProjectCard.jsx";
+import api from "../../services/api";                 // <— usa api, não axios
+import styles from "./MyProjectsFreelancer.module.css";
+import { FiBriefcase, FiPlus, FiLoader } from "react-icons/fi";
+import { useToast } from "../../context/ToastContext.jsx";
 
-const MyProjectsFreelancer = () => {
+export default function MyProjectsFreelancer() {
   const [projetos, setProjetos] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const cpf = localStorage.getItem("cpf");
-  const token = localStorage.getItem("token");
+  const [loading, setLoading]   = useState(true);
+  const { addToast }            = useToast();
+  const cpf                     = localStorage.getItem("cpf");
 
   useEffect(() => {
-    if (!cpf || !token) {
-      alert("CPF ou token não encontrados. Faça login novamente.");
-      setLoading(false);
-      return;
+    if (!cpf) {
+      addToast("error", "Você precisa estar logado para ver seus projetos.");
+      return setLoading(false);
     }
 
-    // Chama o endpoint /api/projects/freelancer/{cpf}
-    axios
-      .get(`https://markcollab-backend.onrender.com/api/projects/freelancer/${cpf}`, {
-        headers: { Authorization: `Bearer ${token}` },
+    setLoading(true);
+    // **path variable**, exatamente como o back espera**
+    api.get(`/projects/freelancer/${cpf}`)
+      .then(({ data }) => setProjetos(Array.isArray(data) ? data : []))
+      .catch(err => {
+        console.error("Erro ao buscar projetos (Freelancer):", err);
+        addToast("error", "Não foi possível carregar seus projetos.");
+        setProjetos([]);
       })
-      .then(({ data }) => {
-        console.log("Projetos contratados para freelancer:", data);
-        setProjetos(data || []);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Erro ao buscar projetos contratados (Freelancer):", error);
-        alert("Erro ao carregar os projetos.");
-        setLoading(false);
-      });
-  }, [cpf, token]);
+      .finally(() => setLoading(false));
+  }, [cpf, addToast]);
 
   if (loading) {
     return (
-      <div className="pageWrapper">
-        <Navbar />
-        <div className="loading">Carregando seus projetos contratados...</div>
+      <div className={styles.pageWrapper}>
+        <div className={styles.loadingState}>
+          <FiLoader className={styles.loaderIcon} /> Carregando seus projetos...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="pageWrapper">
-      <Navbar />
-      <div className="container">
-        <div className="header">
-          <h1 className="title">Meus Projetos (Freelancer)</h1>
-          <Link to="/buscarprojetos" className="btn primary btnBuscar">
-            Buscar Projetos
+    <div className={styles.pageWrapper}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Meus Projetos</h1>
+          <Link to="/buscar-projetos" className={styles.btnPrimary}>
+            <FiPlus /> Buscar Novos Projetos
           </Link>
         </div>
 
         {projetos.length > 0 ? (
-          <div className="cards">
-            {projetos.map((projeto) => (
-              <div key={projeto.projectId} className="projeto-card">
-                <div className="projeto-info">
-                  <h3>{projeto.projectTitle}</h3>
-                  <p>{projeto.projectDescription}</p>
-                  <p>
-                    <strong>Prazo:</strong>{" "}
-                    {projeto.deadline
-                      ? new Date(projeto.deadline).toLocaleDateString()
-                      : "-"}
-                  </p>
-                  <p>
-                    <strong>Preço:</strong>{" "}
-                    R${" "}
-                    {typeof projeto.projectPrice === "number"
-                      ? projeto.projectPrice.toLocaleString("pt-BR", {
-                          minimumFractionDigits: 2,
-                        })
-                      : projeto.projectPrice}
-                  </p>
-                </div>
-                <div
-                  className="projetos-status"
-                  style={{
-                    backgroundColor:
-                      projeto.status === "Concluído"
-                        ? "#28a745"
-                        : projeto.status === "Em andamento"
-                        ? "#ffc107"
-                        : "#dc3545",
-                  }}
-                >
-                  {projeto.status}
-                </div>
-              </div>
+          <div className={styles.cardsGrid}>
+            {projetos.map(p => (
+              <ProjectCard
+                key={p.projectId}
+                project={p}
+                userRole="freelancer"
+                showDetailsButton
+                showDeliverButton={p.status === "Em andamento"}
+              />
             ))}
           </div>
         ) : (
-          <p className="noProjects">Você ainda não foi contratado em nenhum projeto.</p>
+          <div className={styles.emptyState}>
+            <FiBriefcase className={styles.emptyStateIcon} />
+            <h3>Nenhum projeto no momento</h3>
+            <p>Você ainda não foi contratado.</p>
+            <Link to="/buscar-projetos" className={styles.btnPrimary}>
+              Encontrar Projetos
+            </Link>
+          </div>
         )}
       </div>
     </div>
   );
-};
-
-export default MyProjectsFreelancer;
+}

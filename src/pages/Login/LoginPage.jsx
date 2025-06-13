@@ -1,36 +1,31 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import Navbar from '../../components/Navbar/Navbar';
-import Input from '../../components/Input/Input';
-import Button from '../../components/Button/Button';
-import SuccessMessage from '../../components/SuccessMessage/SuccessMessage';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import api from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import styles from './LoginPage.module.css';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useContext(AuthContext);
+  const from = location.state?.from?.pathname || '/home';
 
   const [identifier, setIdentifier] = useState('');
-  const [password,   setPassword]   = useState('');
-  const [showPwd,    setShowPwd]    = useState(false);
-  const [error,      setError]      = useState('');
-  const [loading,    setLoading]    = useState(false);
-  const [success,    setSuccess]    = useState(false);
+  const [password, setPassword] = useState('');
+  const [showPwd, setShowPwd] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
-      const res = await axios.post('https://markcollab-backend.onrender.com/api/auth/login', { identifier, password });
-      const { token, role, cpf } = res.data;
-      login(token, role);
-      if (cpf) localStorage.setItem('cpf', cpf);
-      navigate('/');
+      const res = await api.post('/auth/login', { identifier, password });
+      const { token } = res.data;
+      await login(token);
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Credenciais inválidas. Tente novamente.');
     } finally {
@@ -38,72 +33,56 @@ export default function LoginPage() {
     }
   }
 
-  if (success) {
-    return (
-      <>
-        <Navbar />
-        <div className={styles.page}>
-          <SuccessMessage
-            title="Login realizado!"
-            text="Você está logado."
-            linkText="Ir para o início"
-            linkTo="/"
-          />
-        </div>
-      </>
-    );
-  }
-
   return (
-    <>
-      <Navbar />
-      <div className={styles.page}>
-        <div className={styles.card}>
-          <div className={styles.left}>
-            <h2>Conecte-se ao MarkCollab</h2>
-            <p>Entre na sua conta para aproveitar todos os benefícios da plataforma MarkCollab.</p>
-          </div>
-          <div className={styles.right}>
-            <h2>Entre na sua conta</h2>
-            <form onSubmit={handleSubmit} noValidate className={styles.form}>
-              <Input
-                name="identifier"
-                type="text"
-                placeholder="Email, CPF ou Username"
-                value={identifier}
-                onChange={e => setIdentifier(e.target.value)}
-                error={error && !password ? error : ''}
-              />
+    <div className={styles.pageWrapper}>
+      <div className={styles.authContainer}>
+        <div className={styles.authHeader}>
+          <h2>Acesse sua Conta</h2>
+          <p>Bem-vindo de volta! Faça o login para continuar.</p>
+        </div>
 
-              <Input
-                name="password"
+        <form onSubmit={handleSubmit} noValidate className={styles.form}>
+          <div className={styles.inputGroup}>
+            <label htmlFor="identifier">Email, CPF ou Username</label>
+            <input
+              id="identifier"
+              type="text"
+              value={identifier}
+              onChange={e => setIdentifier(e.target.value)}
+              autoComplete="username"
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <div className={styles.labelWrapper}>
+              <label htmlFor="password">Senha</label>
+              <Link to="/esqueci-senha" className={styles.forgotPassword}>Esqueceu a senha?</Link>
+            </div>
+            <div className={styles.passwordWrapper}>
+              <input
+                id="password"
                 type={showPwd ? 'text' : 'password'}
-                placeholder="Senha"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                error={error && password ? error : ''}
-                icon={showPwd ? FaEyeSlash : FaEye}
-                onIconClick={() => setShowPwd(v => !v)}
+                autoComplete="current-password"
               />
-
-              <div className={styles.forgot}>
-                <Link to="/esqueci-senha">Esqueci minha senha</Link>
-              </div>
-
-              {error && <div className={styles.serverError}>{error}</div>}
-
-              <Button type="submit" disabled={loading}>
-                {loading ? 'Entrando...' : 'Entrar'}
-              </Button>
-            </form>
-
-            <div className={styles.signup}>
-              Ainda não possui uma conta?{' '}
-              <Link to="/cadastro">Crie agora</Link>
+              <button type="button" onClick={() => setShowPwd(v => !v)} className={styles.eyeIcon}>
+                {showPwd ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
           </div>
-        </div>
+          
+          {error && <div className={styles.serverError}>{error}</div>}
+          
+          <button type="submit" className={styles.submitButton} disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+          
+          <p className={styles.switchFormLink}>
+            Não tem uma conta? <Link to="/cadastro">Cadastre-se</Link>
+          </p>
+        </form>
       </div>
-    </>
+    </div>
   );
 }

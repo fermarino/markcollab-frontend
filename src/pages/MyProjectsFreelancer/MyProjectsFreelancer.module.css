@@ -6,7 +6,7 @@
 .container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2rem; 
+  padding: 2rem;
 }
 
 .header {
@@ -14,8 +14,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  flex-wrap: wrap; 
-  gap: 1rem; 
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .title {
@@ -24,20 +24,7 @@
   margin: 0;
 }
 
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.selectStatus {
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-  background-color: #fff;
-}
-
-.btn.primary {
+.btnPrimary {
   background-color: #2C65F6;
   color: white;
   padding: 0.7rem 1.5rem;
@@ -45,29 +32,43 @@
   text-decoration: none;
   font-weight: 600;
   transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.btn.primary:hover {
+.btnPrimary:hover {
   background-color: #1E4BBE;
 }
 
-.cards {
+.cardsGrid {
   display: grid;
   gap: 1.5rem;
 }
 
-.paginationWrapper {
-  display: flex;
-  justify-content: center;
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #fff;
+  border-radius: 12px;
   margin-top: 2rem;
 }
 
-.noProjects {
-  text-align: center;
-  padding: 3rem;
-  background-color: #fff;
-  border-radius: 8px;
+.emptyStateIcon {
+  font-size: 3.5rem;
+  color: #a0aec0;
+  margin-bottom: 1.5rem;
+}
+
+.emptyState h3 {
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.emptyState p {
   color: #718096;
+  margin-bottom: 1.5rem;
 }
 
 .loadingState {
@@ -89,7 +90,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Media Query para responsividade */
 @media (max-width: 768px) {
   .container {
     padding: 1.5rem;
@@ -97,14 +97,5 @@
   .header {
     flex-direction: column;
     align-items: flex-start;
-  }
-  .headerActions {
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .selectStatus, .btn.primary {
-    width: 100%;
-    text-align: center;
   }
 }

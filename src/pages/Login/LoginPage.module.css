@@ -1,115 +1,167 @@
-.page {
+.pageWrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: 2rem;
-  min-height: calc(100vh - 64px);
-}
-
-.card {
-  display: flex;
+  justify-content: center;
   width: 100%;
-  max-width: 900px;
-  min-height: 600px;
-  background: white;
-  border: 1px solid #75757554;
-  border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  min-height: calc(100vh - 70px);
+  background-color: #f7faff;
+  padding: 2rem 1rem;
+  font-family: 'Poppins', sans-serif;
 }
 
-
-.left {
-  flex: 1;
-  background-color: #007aff;
-  color: white;
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.authContainer {
+  width: 100%;
+  max-width: 450px;
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
 }
 
-.left h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.left p {
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.right {
-  flex: 1;
-  background: white;
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.right h2 {
+.authHeader {
   text-align: center;
   margin-bottom: 2rem;
-  font-size: 1.5rem;
 }
 
+.authHeader h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0 0 0.5rem 0;
+}
+
+.authHeader p {
+  font-size: 1rem;
+  color: #718096;
+  margin: 0;
+}
 
 .form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  width: 100%;
 }
 
-.forgot {
-  text-align: right;
-  margin-top: -0.5rem;
+.inputGroup {
+  margin-bottom: 1.25rem;
+}
+
+.labelWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   margin-bottom: 0.5rem;
 }
-.forgot a {
-  font-size: 0.85rem;
-  color: #007aff;
-  text-decoration: none;
-}
-.forgot a:hover {
-  text-decoration: underline;
-}
 
-/* erro geral */
-.serverError {
-  background: #fdecea;
-  color: #b71c1c;
-  padding: 0.75rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.form button {
-  margin-top: 0.5rem;
-}
-
-
-.signup {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
-.signup a {
-  color: #007aff;
+.inputGroup label {
+  font-size: 0.875rem;
   font-weight: 500;
-  text-decoration: none;
+  color: #4a5568;
 }
-.signup a:hover {
+
+.inputGroup input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #2d3748;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
+}
+
+.passwordWrapper {
+  position: relative;
+}
+
+.eyeIcon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #a0aec0;
+  font-size: 1.25rem;
+}
+
+.forgotPassword {
+  font-size: 0.8rem;
+  color: #3182ce;
+  text-decoration: none;
+  font-weight: 500;
+}
+.forgotPassword:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-  .card {
-    flex-direction: column;
-    min-height: auto;
+.submitButton {
+  width: 100%;
+  padding: 0.875rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #3182ce;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  margin-top: 1rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #2b6cb0;
+  box-shadow: 0 4px 14px rgba(49, 130, 206, 0.25);
+}
+
+.submitButton:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.serverError {
+  background-color: #fed7d7;
+  color: #c53030;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.switchFormLink {
+  text-align: center;
+  margin-top: 2rem;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.switchFormLink a {
+  color: #3182ce;
+  font-weight: 600;
+  text-decoration: none;
+}
+.switchFormLink a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .pageWrapper {
+    padding: 0;
   }
-  .left {
-    display: none;
+  .authContainer {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 }
