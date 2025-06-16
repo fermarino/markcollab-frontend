@@ -1,3 +1,5 @@
+// Remova qualquer System.out.println ou console.log de depuração que não seja necessário.
+
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
@@ -7,47 +9,102 @@ import {
   FiUser, FiDollarSign, FiCalendar
 } from 'react-icons/fi';
 import { AuthContext } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext'; // Importe se você usa Toast
 
 export default function Proposals() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const employerCpf = user?.cpf;
+  const { user } = useContext(AuthContext); // user deve ter { cpf, role }
+  const employerCpf = user?.cpf; // CPF do empregador logado
 
   const [project, setProject] = useState(null);
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { addToast } = useToast(); // Se você usa Toast
 
   useEffect(() => {
-    if (!projectId) return;
+    if (!projectId) {
+      setError('ID do projeto não encontrado.');
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     Promise.all([
       api.get(`/projects/${projectId}`),
       api.get(`/interests/project/${projectId}`)
     ])
-    .then(([pRes, iRes]) => {
-      setProject(pRes.data);
-      setProposals(Array.isArray(iRes.data) ? iRes.data : []);
-    })
-    .catch(err => {
-      console.error("Falha ao carregar dados:", err);
-      setError('Falha ao carregar dados do projeto.');
-    })
-    .finally(() => setLoading(false));
+      .then(([pRes, iRes]) => {
+        setProject(pRes.data);
+        setProposals(Array.isArray(iRes.data) ? iRes.data : []);
+      })
+      .catch(err => {
+        console.error("Falha ao carregar dados:", err);
+        setError('Falha ao carregar dados do projeto. ' + (err.response?.data?.message || err.message));
+      })
+      .finally(() => setLoading(false));
   }, [projectId]);
 
   const handleAccept = async (freelancerCpf) => {
-    if (!projectId || !freelancerCpf || !employerCpf) {
-      setError('Não foi possível realizar a contratação. Faltam informações.');
+    if (!projectId || !employerCpf || !project?.projectId) {
+      addToast('error', 'Não foi possível iniciar o pagamento. Faltam informações do projeto ou do empregador.');
       return;
     }
+
+    // Certifique-se de que o status do projeto permite a contratação antes do pagamento
+    if (project.status !== 'Aberto') {
+      addToast('warning', 'Este projeto não pode ser aceito no status atual. Apenas projetos "Abertos" podem ser aceitos.');
+      return;
+    }
+
     try {
+      // --- PASSO 1: CHAME O ENDPOINT DE CONTRATAÇÃO (HIRE) PRIMEIRO ---
+      // Isso irá definir o `hiredFreelancer` no backend e mudar o status do projeto para "Em andamento".
+      console.log(`Tentando contratar freelancer ${freelancerCpf} para projeto ${projectId} pelo empregador ${employerCpf}`);
       await api.post(`/projects/${projectId}/hire/${freelancerCpf}/${employerCpf}`);
-      navigate('/contratante/meus-projetos');
-    } catch {
-      setError('Não foi possível aceitar a proposta.');
+      addToast('success', 'Freelancer contratado! Redirecionando para o pagamento...');
+
+      // Opcional: Recarregar dados do projeto e propostas para refletir a mudança de status/contratação no frontend
+      // Isso pode ser útil para atualizar a UI imediatamente após a contratação, antes mesmo do pagamento.
+      // setLoading(true);
+      // const [pRes, iRes] = await Promise.all([
+      //   api.get(`/projects/${projectId}`),
+      //   api.get(`/interests/project/${projectId}`)
+      // ]);
+      // setProject(pRes.data);
+      // setProposals(Array.isArray(iRes.data) ? iRes.data : []);
+      // setLoading(false);
+
+
+      // --- PASSO 2: SALVAR IDs NO localStorage ANTES DE REDIRECIONAR PARA PAGAMENTO ---
+      // Isso pode ser útil para qualquer lógica pós-pagamento no frontend.
+      localStorage.setItem('tempProjectIdForPayment', projectId);
+      localStorage.setItem('tempFreelancerCpfForPayment', freelancerCpf);
+      console.log('Salvando no localStorage: Project ID:', projectId);
+      console.log('Salvando no localStorage: Freelancer CPF:', freelancerCpf);
+
+      // --- PASSO 3: INICIAR O FLUXO DE PAGAMENTO DO MERCADO PAGO ---
+      const response = await api.post(`/projects/${project.projectId}/pay/${employerCpf}`);
+      const initPointUrl = response.data; // A URL do Mercado Pago é o corpo da resposta
+
+      if (initPointUrl) {
+        window.location.href = initPointUrl; // Redirecionar o usuário
+      } else {
+        addToast('error', 'Não foi possível obter a URL de pagamento do Mercado Pago.');
+        // Limpar itens temporários se a URL não for obtida
+        localStorage.removeItem('tempProjectIdForPayment');
+        localStorage.removeItem('tempFreelancerCpfForPayment');
+      }
+
+    } catch (err) {
+      console.error("Erro ao aceitar proposta, contratar ou iniciar pagamento:", err);
+      // Tratamento de erros do backend
+      const errorMessage = err.response?.data?.message || 'Ocorreu um erro ao aceitar a proposta, contratar o freelancer ou iniciar o pagamento.';
+      addToast('error', errorMessage);
+      // Limpar itens temporários se a requisição falhar
+      localStorage.removeItem('tempProjectIdForPayment');
+      localStorage.removeItem('tempFreelancerCpfForPayment');
     }
   };
 
@@ -57,8 +114,10 @@ export default function Proposals() {
         headers: { 'Content-Type': 'text/plain' }
       });
       setProposals(ps => ps.map(p => p.id === interestId ? { ...p, status: 'Recusado' } : p));
-    } catch {
-      setError('Não foi possível recusar a proposta.');
+      addToast('info', 'Proposta recusada.');
+    } catch (err) {
+      console.error("Erro ao recusar proposta:", err);
+      addToast('error', 'Não foi possível recusar a proposta.');
     }
   };
 
