@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import api from "../../services/api";  // usa api, não axios
+import { useNavigate, Link, useLocation } from "react-router-dom"; // <-- Importe useLocation
+import api from "../../services/api";
 import Popupcancelar from "../../components/CancelProject/CancelProject.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import ProjectCard from "../../components/ProjectCard/ProjectCard.jsx";
@@ -9,22 +9,25 @@ import { useToast } from "../../context/ToastContext.jsx";
 import { FiLoader } from "react-icons/fi";
 
 export default function MyProjectsEmployer() {
-  const [projetos, setProjetos]       = useState([]);
-  const [loading, setLoading]         = useState(true);
+  const [projetos, setProjetos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("Todos");
   const [popupVisivel, setPopupVisivel] = useState(false);
-  const [selId, setSelId]             = useState(null);
+  const [selId, setSelId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage                  = 3;
+  const itemsPerPage = 3;
 
   const { addToast } = useToast();
-  const cpf          = localStorage.getItem("cpf");
-  const navigate     = useNavigate();
+  const cpf = localStorage.getItem("cpf");
+  const navigate = useNavigate();
+  const location = useLocation(); // <-- Inicialize useLocation
 
-  useEffect(() => {
+  // Função para carregar os projetos
+  const fetchProjects = () => {
     if (!cpf) {
       addToast("error", "Você precisa estar logado para ver seus projetos.");
-      return setLoading(false);
+      setLoading(false);
+      return;
     }
 
     setLoading(true);
@@ -36,7 +39,11 @@ export default function MyProjectsEmployer() {
         setProjetos([]);
       })
       .finally(() => setLoading(false));
-  }, [cpf, addToast]);
+  };
+
+  useEffect(() => {
+    fetchProjects(); // Chama a função ao montar o componente
+  }, [cpf, addToast, location.pathname]); // <-- Adicione location.pathname como dependência
 
   const normalize = str => (str || "").trim().toLowerCase();
   const listaFiltrada =
@@ -45,9 +52,9 @@ export default function MyProjectsEmployer() {
       : projetos.filter(p => normalize(p.status) === normalize(filterStatus));
 
   const totalPages = Math.ceil(listaFiltrada.length / itemsPerPage);
-  const paged      = listaFiltrada.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paged = listaFiltrada.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const handleEdit   = id => navigate(`/projetos/${id}/editar`);
+  const handleEdit = id => navigate(`/projetos/${id}/editar`);
   const handleCancel = id => {
     setSelId(id);
     setPopupVisivel(true);
@@ -110,6 +117,7 @@ export default function MyProjectsEmployer() {
                   project={p}
                   userRole="employer"
                   showDropdown={normalize(p.status) === "aberto"}
+                  // AQUI: O botão "Ver Propostas" só será exibido se o status for "aberto"
                   showViewProposals={normalize(p.status) === "aberto"}
                   showDetailsButton={true}
                   onEdit={() => handleEdit(p.projectId)}
@@ -118,7 +126,7 @@ export default function MyProjectsEmployer() {
               ))}
             </div>
             <div className={styles.paginationWrapper}>
-              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage}/>
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
             </div>
           </>
         ) : (
@@ -128,7 +136,7 @@ export default function MyProjectsEmployer() {
         )}
       </div>
 
-      {popupVisivel && <Popupcancelar onClose={() => setPopupVisivel(false)} onConfirm={confirmCancel}/>}
+      {popupVisivel && <Popupcancelar onClose={() => setPopupVisivel(false)} onConfirm={confirmCancel} />}
     </div>
   );
 }
