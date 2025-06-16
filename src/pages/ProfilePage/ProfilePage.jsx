@@ -8,7 +8,7 @@ import styles from './ProfilePage.module.css';
 import { FiUser, FiEdit3, FiSave, FiX, FiCamera, FiBriefcase, FiMail, FiFileText } from 'react-icons/fi';
 import { useToast } from '../../context/ToastContext';
 
-const API_URL = 'http://localhost:8080/api'; // Substitua pela sua API
+const API_URL = 'https://markcollab-backend.onrender.com/api'; // Substitua pela sua API
 
 // Schema de validação sem o username
 const profileSchema = z.object({
