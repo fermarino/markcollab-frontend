@@ -26,7 +26,7 @@ const ProjectEdit = () => {
     }
 
     axios
-      .get(`http://localhost:8080/api/projects/${id}`, {
+      .get(`https://markcollab-backend.onrender.com/api/projects/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then((res) => {
