@@ -5,10 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // sempre que o cliente pedir /api/**,
-      // o Vite vai repassar pra http://localhost:8080/api/**
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'https://markcollab-backend.onrender.com',
         changeOrigin: true,
         secure: false,
       },
