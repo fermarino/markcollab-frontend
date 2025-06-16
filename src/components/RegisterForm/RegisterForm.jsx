@@ -16,7 +16,7 @@ import {
   FaEyeSlash
 } from 'react-icons/fa';
 
-const API_BASE = 'http://localhost:8080/api/auth/register';
+const API_BASE = 'https://markcollab-backend.onrender.com/api/auth/register';
 
 export default function RegisterForm({ type }) {
   const validate = useRegisterValidation(type);
