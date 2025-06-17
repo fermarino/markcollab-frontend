@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+// 1. USE O SERVIÇO 'api'
+import api from '../../services/api';
 import './ProjectEdit.css';
 
 const ProjectEdit = () => {
@@ -17,25 +17,18 @@ const ProjectEdit = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const cpf = localStorage.getItem('cpf');
-  const token = localStorage.getItem('token');
+  // Não precisamos mais pegar o token manualmente aqui
 
   useEffect(() => {
-    if (!token) {
-      alert('Você precisa estar logado para editar um projeto.');
-      return;
-    }
-
-    axios
-      .get(`https://markcollab-backend.onrender.com/api/projects/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+    // A verificação de token é feita pelo interceptor do 'api.js'
+    // 2. USE 'api.get' E O CAMINHO COM /api. O TOKEN É INJETADO AUTOMATICAMENTE
+    api.get(`/api/projects/${id}`)
       .then((res) => {
         const p = res.data;
         setProject({
           projectTitle: p.projectTitle || '',
           projectDescription: p.projectDescription || '',
           projectSpecifications: p.projectSpecifications || '',
-          // Se não houver deadline, mantemos string vazia
           deadline: p.deadline ? p.deadline.split('T')[0] : '',
           projectPrice: p.projectPrice != null ? p.projectPrice : '',
           status: p.status || ''
@@ -47,7 +40,7 @@ const ProjectEdit = () => {
         alert('Erro ao carregar projeto.');
         setLoading(false);
       });
-  }, [id, token]);
+  }, [id]);
 
   const handleChange = (e) => {
     setProject({ ...project, [e.target.name]: e.target.value });
@@ -58,28 +51,24 @@ const ProjectEdit = () => {
 
     const deadlineParaEnviar = project.deadline.trim() === '' ? null : project.deadline;
 
-    axios
-      .put(
-        `/api/projects/${id}/${cpf}`,
-        {
-          projectTitle: project.projectTitle,
-          projectDescription: project.projectDescription,
-          projectSpecifications: project.projectSpecifications,
-          deadline: deadlineParaEnviar,
-          projectPrice: parseFloat(project.projectPrice),
-          status: project.status
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+    const payload = {
+      projectTitle: project.projectTitle,
+      projectDescription: project.projectDescription,
+      projectSpecifications: project.projectSpecifications,
+      deadline: deadlineParaEnviar,
+      projectPrice: parseFloat(project.projectPrice),
+      status: project.status
+    };
+
+    // 3. USE 'api.put'. O TOKEN É INJETADO AUTOMATICAMENTE
+    api.put(`/api/projects/${id}/${cpf}`, payload)
       .then(() => {
         alert('✅ Projeto atualizado com sucesso!');
         navigate('/meusprojetos');
       })
       .catch((err) => {
         console.error('Erro ao atualizar projeto (PUT):', err.response || err);
-        const msgBackend = err.response?.data || err.message;
+        const msgBackend = err.response?.data?.message || err.message;
         alert(`❌ Erro ao atualizar projeto: ${msgBackend}`);
       });
   };
@@ -127,7 +116,6 @@ const ProjectEdit = () => {
             className="input-field bordered"
             value={project.deadline}
             onChange={handleChange}
-            // não é obrigatório, pois o campo pode ficar vazio
           />
 
           <label>Preço do projeto</label>
