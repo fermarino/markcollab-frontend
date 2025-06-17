@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// 1. USE O SERVIÇO 'api'
+import api from '../../services/api';
 import styles from './ProjectDelivery.module.css'; 
 import { FiPaperclip, FiLink, FiCheckCircle } from 'react-icons/fi'; 
+
 export default function ProjectDelivery() {
   const { projectId } = useParams();
   const navigate = useNavigate();
@@ -13,7 +15,6 @@ export default function ProjectDelivery() {
   const [error, setError] = useState('');
 
   const handleFileChange = (e) => {
-    // Permite adicionar mais arquivos sem substituir os anteriores
     setFiles(prevFiles => [...prevFiles, ...Array.from(e.target.files)]);
   };
 
@@ -31,20 +32,14 @@ export default function ProjectDelivery() {
       formData.append('attachments', file);
     });
 
-    const token = localStorage.getItem('token');
-
-    axios.post(
-        `${process.env.REACT_APP_API}/projects/${projectId}/deliver`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      )
+    // 2. USE 'api.post' E O CAMINHO CORRETO. NOTE QUE A VARIÁVEL DE AMBIENTE NÃO É MAIS USADA AQUI.
+    // O 'Content-Type' é importante para upload de arquivos.
+    api.post(`/api/projects/${projectId}/deliver`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
       .then(() => {
-        // Sucesso! Redireciona de volta para a lista de projetos.
         navigate('/meusprojetosfreelancer');
       })
       .catch((err) => {
