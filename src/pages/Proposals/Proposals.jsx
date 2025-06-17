@@ -31,8 +31,8 @@ export default function Proposals() {
     setLoading(true);
     // 1. ADICIONE O PREFIXO /api/ EM TODAS AS CHAMADAS
     Promise.all([
-      api.get(`/api/projects/${projectId}`),
-      api.get(`/api/interests/project/${projectId}`)
+      api.get(`projects/${projectId}`),
+      api.get(`interests/project/${projectId}`)
     ])
       .then(([pRes, iRes]) => {
         setProject(pRes.data);
@@ -59,7 +59,7 @@ export default function Proposals() {
     try {
       // 2. ADICIONE O PREFIXO /api/
       console.log(`Tentando contratar freelancer ${freelancerCpf} para projeto ${projectId} pelo empregador ${employerCpf}`);
-      await api.post(`/api/projects/${projectId}/hire/${freelancerCpf}/${employerCpf}`);
+      await api.post(`projects/${projectId}/hire/${freelancerCpf}/${employerCpf}`);
       addToast('success', 'Freelancer contratado! Redirecionando para o pagamento...');
 
       localStorage.setItem('tempProjectIdForPayment', projectId);
@@ -68,7 +68,7 @@ export default function Proposals() {
       console.log('Salvando no localStorage: Freelancer CPF:', freelancerCpf);
 
       // 3. ADICIONE O PREFIXO /api/
-      const response = await api.post(`/api/projects/${project.projectId}/pay/${employerCpf}`);
+      const response = await api.post(`projects/${project.projectId}/pay/${employerCpf}`);
       const initPointUrl = response.data;
 
       if (initPointUrl) {
@@ -90,8 +90,7 @@ export default function Proposals() {
 
   const handleReject = async (interestId) => {
     try {
-      // 4. ADICIONE O PREFIXO /api/
-      await api.put(`/api/interests/${interestId}/status`, 'Recusado', {
+      await api.put(`interests/${interestId}/status`, 'Recusado', {
         headers: { 'Content-Type': 'text/plain' }
       });
       setProposals(ps => ps.map(p => p.id === interestId ? { ...p, status: 'Recusado' } : p));
