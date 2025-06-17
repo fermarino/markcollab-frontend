@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import axios from "axios";
+// 1. USE O SERVIÇO 'api'
+import api from "../../services/api";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import ProjectCard from '../../components/ProjectCard/ProjectCard.jsx';
 import styles from "./SearchProjects.module.css";
@@ -14,10 +15,11 @@ export default function SearchProjects() {
   const [loading, setLoading] = useState(true);
   const itemsPerPage = 5;
   
-  const token = localStorage.getItem("token");
+  // O token é injetado automaticamente pelo 'api.js'
 
   useEffect(() => {
-    axios.get("/api/projects/open", { headers: { Authorization: `Bearer ${token}` } })
+    // 2. USE 'api.get'
+    api.get("projects/open")
     .then(({ data }) => {
       const abertos = data.filter(p => p.status === "Aberto");
       setProjetos(abertos);
@@ -25,10 +27,10 @@ export default function SearchProjects() {
       setLoading(false);
     })
     .catch(() => {
-        setLoading(false);
-        // Idealmente, tratar o erro de forma mais visual
+      setLoading(false);
+      // Idealmente, tratar o erro de forma mais visual
     });
-  }, [token]);
+  }, []); // Removido o 'token' da dependência, pois não é mais necessário
 
   useEffect(() => {
     const txt = busca.toLowerCase();
