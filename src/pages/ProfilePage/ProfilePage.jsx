@@ -3,14 +3,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { AuthContext } from '../../context/AuthContext';
-// 1. USE O SERVIÇO 'api'
 import api from '../../services/api';
 import styles from './ProfilePage.module.css';
-import { FiUser, FiEdit3, FiSave, FiX, FiCamera, FiBriefcase, FiMail, FiFileText } from 'react-icons/fi';
+import { FiUser, FiEdit3, FiSave, FiX, FiCamera, FiBriefcase, FiMail, FiFileText, FiLoader } from 'react-icons/fi';
 import { useToast } from '../../context/ToastContext';
-
-// 2. REMOVA A CONSTANTE DE URL, ELA VEM DO 'api.js'
-// const API_URL = '...';
 
 const profileSchema = z.object({
   name: z.string().min(3, 'O nome deve ter no mínimo 3 caracteres.'),
@@ -44,7 +40,6 @@ const ProfilePage = () => {
   const onSave = async (formData) => {
     setSaving(true);
     try {
-      // 3. USE 'api.put'
       await api.put(`user/me/update`, formData);
       addToast('success', 'Perfil atualizado com sucesso!');
       await fetchUser();
@@ -69,7 +64,6 @@ const ProfilePage = () => {
     formDataImg.append('profilePicture', file);
     
     try {
-      // 4. USE 'api.post'. MANTENHA O HEADER 'Content-Type' PARA UPLOAD DE ARQUIVO
       await api.post(`user/upload-profile-picture`, formDataImg, {
         headers: {
           'Content-Type': 'multipart/form-data',

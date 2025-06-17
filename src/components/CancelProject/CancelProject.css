@@ -1,93 +1,101 @@
-.popup-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Transparência para o fundo */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .popup-content {
-    background-color: #fff;
-    width: 400px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column; /* Garantir layout vertical */
-    justify-content: space-between; /* Espaço entre header, corpo e footer */
-  }
-  
-  .popup-header {
-    background-color: #0056b3; /* Azul da barra */
-    color: white;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  
-  .popup-header-icon {
-    margin-right: 10px;
-    font-size: 20px;
-    color: white; /* Garantir que o ícone seja branco */
-  }
-  
-  /* Retirando o negrito do título */
-  .popup-header-title {
-    font-size: 18px;
-    font-weight: normal; /* Removido o negrito */
-    color: white;
-  }
-  
-  .popup-body {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .popup-message {
-    font-size: 16px;
-    margin-bottom: 20px;
-    color: black;
-  }
-  
-  .popup-footer {
-    display: flex;
-    justify-content: center; /* Alinha os botões no centro */
-    padding: 0 20px; /* Espaçamento lateral */
-    margin-top: auto; /* Garante que os botões fiquem no meio correto */
-    margin-bottom: 20px; /* Ajuste para espaçamento proporcional */
-    gap: 50px; /* Reduzindo a distância entre os botões */
-  }
-  
-  .popup-button {
-    width: 33.75%; /* Redução de 25% da largura original (45%) */
-    aspect-ratio: 3 / 1; /* Mantém altura proporcional à largura */
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-  }
-  
-  .sim {
-    background-color: #38AE00; /* Verde */
-    color: white;
-  }
-  
-  .nao {
-    background-color: #D01010; /* Vermelho */
-    color: white;
-  }
-  
-  .popup-button:hover {
-    opacity: 0.8;
-  }
-  
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.cancel-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 20, 30, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.cancel-modal-content {
+  background-color: #ffffff;
+  width: 90%;
+  max-width: 420px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: scaleIn 0.3s ease-out;
+}
+
+.cancel-modal-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #FEF3C7; /* Amarelo bem claro de alerta */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.cancel-modal-icon {
+  font-size: 28px;
+  color: #FBBF24; /* Amarelo do alerta */
+}
+
+.cancel-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1F2937; /* Cinza escuro */
+  margin: 0 0 0.5rem 0;
+}
+
+.cancel-modal-text {
+  font-size: 0.9rem;
+  color: #6B7280; /* Cinza médio */
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.cancel-modal-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.cancel-modal-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-modal-button.secondary {
+  background-color: #ffffff;
+  color: #374151; /* Cinza escuro */
+  border-color: #D1D5DB; /* Borda cinza clara */
+}
+
+.cancel-modal-button.secondary:hover {
+  background-color: #F9FAFB; /* Cinza bem claro */
+}
+
+.cancel-modal-button.danger {
+  background-color: #EF4444; /* Vermelho */
+  color: #ffffff;
+}
+
+.cancel-modal-button.danger:hover {
+  background-color: #DC2626; /* Vermelho mais escuro */
+}
