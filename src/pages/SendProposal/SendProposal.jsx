@@ -17,7 +17,6 @@ const SendProposal = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
   
-  // Pega o usuário logado a partir do Contexto de Autenticação
   const { user } = useContext(AuthContext);
   const freelancerCpf = user?.cpf;
 
@@ -36,7 +35,6 @@ const SendProposal = () => {
     } else {
       const hoje = new Date();
       const dataSelecionada = new Date(dataEntrega);
-      // Ajusta para comparar as datas corretamente, ignorando fuso horário
       hoje.setHours(0, 0, 0, 0);
       dataSelecionada.setMinutes(dataSelecionada.getMinutes() + dataSelecionada.getTimezoneOffset());
       if (dataSelecionada < hoje) {
@@ -63,11 +61,10 @@ const SendProposal = () => {
         deliveryDate: dataEntrega,
       };
       
-      // Chamada real para a API para criar a proposta (Interest)
-      await api.post('/interests/', propostaPayload);
+      await api.post('interests/', propostaPayload);
       
       setIsSuccess(true);
-      setTimeout(() => navigate("/freelancer/meus-projetos"), 2500);
+      setTimeout(() => navigate("freelancer/meus-projetos"), 2500);
 
     } catch (error) {
       console.error("Erro ao enviar proposta:", error);
