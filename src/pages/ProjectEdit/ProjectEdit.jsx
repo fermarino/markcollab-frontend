@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
-import './ProjectEdit.css'; 
+import './ProjectEdit.css';
 
 const ProjectEdit = () => {
-  const { id } = useParams();
+  // ATUALIZAÇÃO: Alterado de { id } para { projectId } para corresponder à rota
+  const { projectId } = useParams();
   const [project, setProject] = useState({
     projectTitle: '',
     projectDescription: '',
@@ -19,9 +20,11 @@ const ProjectEdit = () => {
   const cpf = localStorage.getItem('cpf');
 
   useEffect(() => {
-    if (id) {
+    // ATUALIZAÇÃO: Usando a variável 'projectId'
+    if (projectId) {
       setLoading(true);
-      api.get(`projects/${id}`)
+      // ATUALIZAÇÃO: Usando 'projectId' na chamada da API
+      api.get(`projects/${projectId}`)
         .then((res) => {
           const p = res.data;
           setProject({
@@ -45,7 +48,8 @@ const ProjectEdit = () => {
       setError("ID do projeto não encontrado.");
       setLoading(false);
     }
-  }, [id]);
+    // ATUALIZAÇÃO: Adicionada 'projectId' como dependência do useEffect
+  }, [projectId]);
 
   const handleChange = (e) => {
     setProject({ ...project, [e.target.name]: e.target.value });
@@ -62,10 +66,11 @@ const ProjectEdit = () => {
       projectPrice: parseFloat(project.projectPrice),
       status: project.status
     };
-    api.put(`projects/${id}/${cpf}`, payload)
+    // ATUALIZAÇÃO: Usando 'projectId' na chamada PUT da API
+    api.put(`projects/${projectId}/${cpf}`, payload)
       .then(() => {
         alert('✅ Projeto atualizado com sucesso!');
-        navigate('/meusprojetos'); 
+        navigate('/meusprojetos');
       })
       .catch((err) => {
         console.error('Erro ao atualizar projeto (PUT):', err.response || err);
@@ -81,8 +86,8 @@ const ProjectEdit = () => {
     <div className="project-edit-page">
       <div className="project-edit-container">
         <div className="form-header">
-            <button onClick={() => navigate(-1)} className="back-button">&larr; Voltar</button>
-            <h2 className="edit-title">Editar Projeto</h2>
+          <button onClick={() => navigate(-1)} className="back-button">&larr; Voltar</button>
+          <h2 className="edit-title">Editar Projeto</h2>
         </div>
         
         <form className="edit-form" onSubmit={handleSubmit}>
