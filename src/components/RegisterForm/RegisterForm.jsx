@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import SuccessMessage from '../SuccessMessage/SuccessMessage';
@@ -15,8 +15,6 @@ import {
   FaEye,
   FaEyeSlash
 } from 'react-icons/fa';
-
-const API_BASE = 'https://markcollab-backend.onrender.com/api/auth/register';
 
 export default function RegisterForm({ type }) {
   const validate = useRegisterValidation(type);
@@ -67,7 +65,7 @@ export default function RegisterForm({ type }) {
     };
 
     try {
-      await axios.post(API_BASE, payload);
+      await api.post('/auth/register', payload);
       setSuccess(true);
     } catch (err) {
       const resp = err.response;
