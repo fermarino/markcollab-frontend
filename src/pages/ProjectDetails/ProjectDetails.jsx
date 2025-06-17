@@ -24,13 +24,13 @@ export default function ProjectDetails() {
     }
     
     // 2. USE 'api.get'. O HEADER DE AUTORIZAÇÃO É ADICIONADO AUTOMATICAMENTE!
-    api.get(`/api/projects/${projectId}`)
+    api.get(`projects/${projectId}`)
       .then(res => {
         const proj = res.data;
         setProject(proj);
         if (proj.status === 'Em Revisão' || proj.status === 'Concluído') {
           // 3. CORRIJA A CHAMADA ANINHADA TAMBÉM
-          api.get(`/api/projects/${projectId}/delivery`)
+          api.get(`projects/${projectId}/delivery`)
             .then(deliveryRes => setDelivery(deliveryRes.data))
             .catch(() => console.error("Não foi possível carregar os detalhes da entrega."));
         }
