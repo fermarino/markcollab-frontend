@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+// 1. IMPORTE O SERVIÇO 'api' E REMOVA O 'axios'
+import api from '../../services/api';
 import styles from './ProjectDetails.module.css';
 import { FiCalendar, FiTool, FiCheck, FiX, FiDownload, FiArrowLeft } from 'react-icons/fi';
 
@@ -10,32 +11,33 @@ export default function ProjectDetails() {
   const [delivery, setDelivery] = useState(null);
   const [error, setError] = useState(null);
   
-  const token = localStorage.getItem('token');
+  // O token não precisa mais ser pego manualmente para a chamada
+  // const token = localStorage.getItem('token');
   const userRole = localStorage.getItem('role');
   const userCpf = localStorage.getItem('cpf');
 
   useEffect(() => {
-    if (!projectId || !token) {
-        setError('Informações de autenticação ausentes.');
-        return;
+    if (!projectId) {
+      // A verificação do token não é mais necessária aqui, o interceptor trata
+      setError('ID do projeto não encontrado.');
+      return;
     }
-
-    axios.get(`/api/projects/${projectId}`, { headers: { Authorization: `Bearer ${token}` }})
+    
+    // 2. USE 'api.get'. O HEADER DE AUTORIZAÇÃO É ADICIONADO AUTOMATICAMENTE!
+    api.get(`/api/projects/${projectId}`)
       .then(res => {
         const proj = res.data;
         setProject(proj);
-        // Exemplo: Se o projeto foi entregue, busca os detalhes da entrega
         if (proj.status === 'Em Revisão' || proj.status === 'Concluído') {
-          // Substitua pelo seu endpoint real para buscar a entrega
-          axios.get(`/api/projects/${projectId}/delivery`, { headers: { Authorization: `Bearer ${token}` }})
+          // 3. CORRIJA A CHAMADA ANINHADA TAMBÉM
+          api.get(`/api/projects/${projectId}/delivery`)
             .then(deliveryRes => setDelivery(deliveryRes.data))
             .catch(() => console.error("Não foi possível carregar os detalhes da entrega."));
         }
       })
       .catch(() => setError('Não foi possível carregar os detalhes do projeto.'));
-  }, [projectId, token]);
+  }, [projectId]);
 
-  // Lógica de renderização de botões para o contratante e freelancer
   const renderActionButtons = () => {
     if (!project) return null;
 
@@ -66,7 +68,6 @@ export default function ProjectDetails() {
     return null;
   };
 
-  // Lógica de renderização da seção de entrega para o contratante
   const renderDeliveryDetails = () => {
     if (!delivery || userCpf !== project.employerCpf) return null;
 
@@ -89,8 +90,8 @@ export default function ProjectDetails() {
         )}
         {project.status === 'Em Revisão' && (
            <div className={styles.deliveryActions}>
-              <button className={`${styles.btn} ${styles.btnApprove}`}><FiCheck/> Aprovar Entrega</button>
-              <button className={`${styles.btn} ${styles.btnReject}`}><FiX/> Pedir Ajustes</button>
+             <button className={`${styles.btn} ${styles.btnApprove}`}><FiCheck/> Aprovar Entrega</button>
+             <button className={`${styles.btn} ${styles.btnReject}`}><FiX/> Pedir Ajustes</button>
            </div>
         )}
       </div>
