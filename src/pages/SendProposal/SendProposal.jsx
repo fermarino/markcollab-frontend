@@ -48,6 +48,13 @@ const SendProposal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError('');
+
+    // Adicionando validação para o CPF do freelancer
+    if (!freelancerCpf) {
+      setSubmitError("Erro de autenticação: CPF do freelancer não encontrado. Faça o login novamente.");
+      return;
+    }
+
     if (!validateFields() || isSubmitting) return;
 
     setIsSubmitting(true);
@@ -61,13 +68,14 @@ const SendProposal = () => {
         deliveryDate: dataEntrega,
       };
       
-      await api.post('interests/', propostaPayload);
+      await api.post('/interests/', propostaPayload);
       
       setIsSuccess(true);
-      setTimeout(() => navigate("freelancer/meus-projetos"), 2500);
+      // ✅ CORREÇÃO: Usar caminho absoluto para o redirecionamento
+      setTimeout(() => navigate("/freelancer/meus-projetos"), 2500);
 
     } catch (error) {
-      console.error("Erro ao enviar proposta:", error);
+      console.error("Erro ao enviar proposta:", error.response || error);
       const errorMessage = error.response?.data?.message || "Não foi possível enviar a proposta. Tente novamente.";
       setSubmitError(errorMessage);
     } finally {
