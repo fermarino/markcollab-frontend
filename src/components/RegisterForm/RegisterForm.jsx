@@ -65,7 +65,7 @@ export default function RegisterForm({ type }) {
     };
 
     try {
-      await api.post('/auth/register', payload);
+      await api.post('/api/auth/register', payload);
       setSuccess(true);
     } catch (err) {
       const resp = err.response;
