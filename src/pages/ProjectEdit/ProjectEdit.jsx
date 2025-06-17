@@ -22,7 +22,7 @@ const ProjectEdit = () => {
   useEffect(() => {
     // A verificação de token é feita pelo interceptor do 'api.js'
     // 2. USE 'api.get' E O CAMINHO COM /api. O TOKEN É INJETADO AUTOMATICAMENTE
-    api.get(`/api/projects/${id}`)
+    api.get(`projects/${id}`)
       .then((res) => {
         const p = res.data;
         setProject({
