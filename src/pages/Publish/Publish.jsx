@@ -85,7 +85,7 @@ export default function Publish() {
 
     try {
       // 2. USE 'api.post' E REMOVA O HEADER MANUAL. O INTERCEPTOR FAZ ISSO!
-      await api.post(`/api/projects/${cpf}`, payload);
+      await api.post(`projects/${cpf}`, payload);
       
       addToast('success', 'Projeto publicado com sucesso!');
       setProject({ name:'', specifications:'', description:'', deadline:'', projectPrice:'' });
