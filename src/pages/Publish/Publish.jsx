@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+// 1. IMPORTE O SERVIÇO 'api' EM VEZ DO 'axios'
+import api from '../../services/api';
 import Input from '../../components/Input/Input.jsx';
-import axios from 'axios';
 import styles from './Publish.module.css';
 import { useToast } from '../../context/ToastContext.jsx';
 import { FiLoader } from 'react-icons/fi';
@@ -12,7 +13,8 @@ export default function Publish() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { addToast } = useToast();
   const cpf = localStorage.getItem('cpf');
-  const token = localStorage.getItem('token');
+  // O token não precisa mais ser pego manualmente aqui para esta chamada
+  // const token = localStorage.getItem('token'); 
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -43,12 +45,12 @@ export default function Publish() {
   const gerarDescricaoIA = () => {
     const { name, specifications, deadline } = project;
     if(!name || !specifications) {
-        addToast('warning', 'Preencha o nome e as especificações para gerar.');
-        return;
+      addToast('warning', 'Preencha o nome e as especificações para gerar.');
+      return;
     }
     setIsGenerating(true);
-    // CHAMADA PARA A API DE IA (URL absoluta)
-    axios.post('https://fastapi-markcollabia.onrender.com/api/ia/gerar-descricao', { name, specifications, deadline })
+    // Para a chamada de IA, como é um domínio diferente, o uso direto do axios está correto.
+    api.post('https://fastapi-markcollabia.onrender.com/api/ia/gerar-descricao', { name, specifications, deadline })
       .then(res => {
         const desc = res.data.descricao?.trim();
         if (!desc) throw new Error("Descrição vazia recebida.");
@@ -61,8 +63,8 @@ export default function Publish() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!cpf || !token) {
-      addToast('error', 'CPF ou Token não encontrado. Faça login novamente.');
+    if (!cpf) { // Não precisa mais verificar o token aqui
+      addToast('error', 'CPF não encontrado. Faça login novamente.');
       return;
     }
     if (!validate()) {
@@ -82,10 +84,9 @@ export default function Publish() {
     };
 
     try {
-      // CHAMADA PARA A API PRINCIPAL (URL relativa)
-      await axios.post(`/api/projects/${cpf}`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // 2. USE 'api.post' E REMOVA O HEADER MANUAL. O INTERCEPTOR FAZ ISSO!
+      await api.post(`/api/projects/${cpf}`, payload);
+      
       addToast('success', 'Projeto publicado com sucesso!');
       setProject({ name:'', specifications:'', description:'', deadline:'', projectPrice:'' });
       setErrors({});
