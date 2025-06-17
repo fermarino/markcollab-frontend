@@ -8,6 +8,7 @@ import styles from './ProfilePage.module.css';
 import { FiUser, FiEdit3, FiSave, FiX, FiCamera, FiBriefcase, FiMail, FiFileText, FiLoader } from 'react-icons/fi';
 import { useToast } from '../../context/ToastContext';
 
+// Esquema de validação para os dados do formulário
 const profileSchema = z.object({
   name: z.string().min(3, 'O nome deve ter no mínimo 3 caracteres.'),
   aboutMe: z.string().optional(),
@@ -19,6 +20,7 @@ const ProfilePage = () => {
   const { user, fetchUser } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false); 
   const fileInputRef = useRef(null);
   const { addToast } = useToast();
 
@@ -26,6 +28,7 @@ const ProfilePage = () => {
     resolver: zodResolver(profileSchema),
   });
 
+  // Efeito para resetar o formulário quando os dados do usuário carregam
   useEffect(() => {
     if (user) {
       reset({
@@ -42,10 +45,11 @@ const ProfilePage = () => {
     try {
       await api.put(`user/me/update`, formData);
       addToast('success', 'Perfil atualizado com sucesso!');
-      await fetchUser();
+      await fetchUser(); 
       setIsEditing(false);
     } catch (error) {
-      addToast('error', 'Erro ao atualizar o perfil.');
+      addToast('error', 'Erro ao atualizar o perfil. Tente novamente.');
+      console.error("Erro ao atualizar o perfil:", error.response?.data || error.message);
     } finally {
       setSaving(false);
     }
@@ -56,118 +60,121 @@ const ProfilePage = () => {
     setIsEditing(false);
   };
 
+  // Função para fazer UPLOAD da foto de perfil
   const handleUploadPhoto = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    setIsUploading(true); 
     const formDataImg = new FormData();
-    formDataImg.append('profilePicture', file);
+    formDataImg.append('profilePicture', file); 
     
     try {
       await api.post(`user/upload-profile-picture`, formDataImg, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
       addToast('success', 'Foto de perfil atualizada!');
-      await fetchUser();
+      await fetchUser(); 
     } catch (error) {
       addToast('error', 'Erro ao enviar a foto. Verifique o formato e tamanho.');
+      console.error("Erro no upload da foto:", error.response?.data || error.message);
+    } finally {
+      setIsUploading(false); 
     }
   };
 
   if (!user) {
-    return <div>Carregando perfil...</div>;
+    return <div className={styles.loading}>Carregando perfil...</div>;
   }
 
   const isEmployer = user.role === 'EMPLOYER';
 
   return (
-      <div className={styles.pageWrapper}>
-        <div className={styles.container}>
-          <form onSubmit={handleSubmit(onSave)} noValidate>
-            <div className={styles.profileHeader}>
-              <div className={styles.avatarContainer}>
-                <img
-                  src={user.profilePicture || `https://ui-avatars.com/api/?name=${user.name}&background=random`}
-                  alt="Foto de perfil"
-                  className={styles.avatar}
-                />
-                {isEditing && (
-                  <>
-                    <button type="button" className={styles.editPhotoButton} onClick={() => fileInputRef.current.click()}>
-                      <FiCamera />
-                    </button>
-                    <input type="file" accept="image/*" ref={fileInputRef} onChange={handleUploadPhoto} style={{ display: 'none' }} />
-                  </>
-                )}
-              </div>
-              <div className={styles.headerInfo}>
-                <h1>{user.name}</h1>
-                <p>@{user.username}</p>
-              </div>
-              <div className={styles.headerActions}>
-                {!isEditing ? (
-                  <button type="button" className={styles.editButton} onClick={() => setIsEditing(true)}>
-                    <FiEdit3 /> Editar Perfil
+    <div className={styles.pageWrapper}>
+      <div className={styles.container}>
+        <form onSubmit={handleSubmit(onSave)} noValidate>
+          <div className={styles.profileHeader}>
+            <div className={styles.avatarContainer}>
+              <img
+                src={user.profilePicture || `https://ui-avatars.com/api/?name=${user.name}&background=random`}
+                alt="Foto de perfil"
+                className={styles.avatar}
+              />
+              {isEditing && (
+                <>
+                  <button type="button" className={styles.editPhotoButton} onClick={() => fileInputRef.current.click()} disabled={isUploading}>
+                    {isUploading ? <FiLoader className={styles.loaderIcon} /> : <FiCamera />}
                   </button>
-                ) : (
-                  <div className={styles.editingActions}>
-                    <button type="button" className={styles.cancelButton} onClick={handleCancel} disabled={saving}>
-                      <FiX /> Cancelar
-                    </button>
-                    <button type="submit" className={styles.saveButton} disabled={saving}>
-                      {saving ? <FiLoader className={styles.loaderIcon} /> : <FiSave />} Salvar
-                    </button>
-                  </div>
-                )}
+                  <input type="file" accept="image/*" ref={fileInputRef} onChange={handleUploadPhoto} style={{ display: 'none' }} />
+                </>
+              )}
+            </div>
+            <div className={styles.headerInfo}>
+              <h1>{user.name}</h1>
+              <p>@{user.username}</p>
+            </div>
+            <div className={styles.headerActions}>
+              {!isEditing ? (
+                <button type="button" className={styles.editButton} onClick={() => setIsEditing(true)}>
+                  <FiEdit3 /> Editar Perfil
+                </button>
+              ) : (
+                <div className={styles.editingActions}>
+                  <button type="button" className={styles.cancelButton} onClick={handleCancel} disabled={saving}>
+                    <FiX /> Cancelar
+                  </button>
+                  <button type="submit" className={styles.saveButton} disabled={saving}>
+                    {saving ? <FiLoader className={styles.loaderIcon} /> : <FiSave />} Salvar
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.profileGrid}>
+            <div className={styles.infoCard}>
+              <h3>Informações da Conta</h3>
+              <div className={styles.formField}>
+                <label><FiUser /> Nome Completo</label>
+                <input {...register('name')} disabled={!isEditing} className={errors.name ? styles.inputError : ''} />
+                {errors.name && <span className={styles.errorText}>{errors.name.message}</span>}
+              </div>
+              <div className={styles.formField}>
+                <label><FiUser /> Nome de Usuário (não pode ser alterado)</label>
+                <input value={user.username} disabled />
+              </div>
+              <div className={styles.formField}>
+                <label><FiMail /> Email</label>
+                <input type="email" value={user.email} disabled />
+              </div>
+              <div className={styles.formField}>
+                <label><FiFileText /> CPF</label>
+                <input value={user.cpf} disabled />
               </div>
             </div>
 
-            <div className={styles.profileGrid}>
-              <div className={styles.infoCard}>
-                <h3>Informações da Conta</h3>
+            <div className={styles.infoCard}>
+              <h3>{isEmployer ? 'Sobre a Empresa' : 'Sobre Mim'}</h3>
+              {isEmployer ? (
                 <div className={styles.formField}>
-                  <label><FiUser /> Nome Completo</label>
-                  <input {...register('name')} disabled={!isEditing} className={errors.name ? styles.inputError : ''} />
-                  {errors.name && <span className={styles.errorText}>{errors.name.message}</span>}
+                  <label><FiBriefcase /> Nome da Empresa</label>
+                  <input {...register('companyName')} disabled={!isEditing} />
                 </div>
+              ) : (
                 <div className={styles.formField}>
-                  <label><FiUser /> Nome de Usuário (não pode ser alterado)</label>
-                  <input value={user.username} disabled />
+                  <label><FiBriefcase /> Minha Experiência</label>
+                  <textarea {...register('experience')} disabled={!isEditing} rows="4" placeholder="Ex: Designer Gráfico com 5 anos de experiência em..." />
                 </div>
-                <div className={styles.formField}>
-                  <label><FiMail /> Email</label>
-                  <input type="email" value={user.email} disabled />
-                </div>
-                <div className={styles.formField}>
-                  <label><FiFileText /> CPF</label>
-                  <input value={user.cpf} disabled />
-                </div>
-              </div>
-
-              <div className={styles.infoCard}>
-                <h3>{isEmployer ? 'Sobre a Empresa' : 'Sobre Mim'}</h3>
-                {isEmployer ? (
-                  <div className={styles.formField}>
-                    <label><FiBriefcase /> Nome da Empresa</label>
-                    <input {...register('companyName')} disabled={!isEditing} />
-                  </div>
-                ) : (
-                  <div className={styles.formField}>
-                    <label><FiBriefcase /> Minha Experiência</label>
-                    <textarea {...register('experience')} disabled={!isEditing} rows="4" placeholder="Ex: Designer Gráfico com 5 anos de experiência em..." />
-                  </div>
-                )}
-                <div className={styles.formField}>
-                  <label>Sobre mim</label>
-                  <textarea {...register('aboutMe')} disabled={!isEditing} rows="6" placeholder={isEmployer ? 'Descreva a missão e os valores da sua empresa...' : 'Fale um pouco sobre você, suas habilidades e paixões...'} />
-                </div>
+              )}
+              <div className={styles.formField}>
+                <label>Sobre mim</label>
+                <textarea {...register('aboutMe')} disabled={!isEditing} rows="6" placeholder={isEmployer ? 'Descreva a missão e os valores da sua empresa...' : 'Fale um pouco sobre você, suas habilidades e paixões...'} />
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
+    </div>
   );
 };
 
