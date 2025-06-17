@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
+import { useToast } from '../../contexts/ToastContext'; // AJUSTE: Importe o seu hook useToast
 import './ProjectEdit.css';
 
 const ProjectEdit = () => {
-  // ATUALIZAÇÃO: Alterado de { id } para { projectId } para corresponder à rota
   const { projectId } = useParams();
+  const { addToast } = useToast(); // AJUSTE: Pegue a função addToast do seu contexto
   const [project, setProject] = useState({
     projectTitle: '',
     projectDescription: '',
@@ -20,10 +21,8 @@ const ProjectEdit = () => {
   const cpf = localStorage.getItem('cpf');
 
   useEffect(() => {
-    // ATUALIZAÇÃO: Usando a variável 'projectId'
     if (projectId) {
       setLoading(true);
-      // ATUALIZAÇÃO: Usando 'projectId' na chamada da API
       api.get(`projects/${projectId}`)
         .then((res) => {
           const p = res.data;
@@ -48,7 +47,6 @@ const ProjectEdit = () => {
       setError("ID do projeto não encontrado.");
       setLoading(false);
     }
-    // ATUALIZAÇÃO: Adicionada 'projectId' como dependência do useEffect
   }, [projectId]);
 
   const handleChange = (e) => {
@@ -66,16 +64,22 @@ const ProjectEdit = () => {
       projectPrice: parseFloat(project.projectPrice),
       status: project.status
     };
-    // ATUALIZAÇÃO: Usando 'projectId' na chamada PUT da API
     api.put(`projects/${projectId}/${cpf}`, payload)
       .then(() => {
-        alert('✅ Projeto atualizado com sucesso!');
-        navigate('/meusprojetos');
+        // AJUSTE 1: Usando o toast de sucesso no lugar do alert.
+        addToast('success', 'Projeto atualizado com sucesso!');
+
+        // AJUSTE 2: Redirecionando para a rota correta do contratante após um breve delay para o toast ser visível.
+        setTimeout(() => {
+          navigate('/contratante/meus-projetos');
+        }, 1500); // Atraso de 1.5 segundos
       })
       .catch((err) => {
         console.error('Erro ao atualizar projeto (PUT):', err.response || err);
         const msgBackend = err.response?.data?.message || err.message;
-        alert(`❌ Erro ao atualizar projeto: ${msgBackend}`);
+        
+        // AJUSTE 1: Usando o toast de erro no lugar do alert.
+        addToast('error', `Erro ao atualizar projeto: ${msgBackend}`);
       });
   };
 
@@ -91,8 +95,9 @@ const ProjectEdit = () => {
         </div>
         
         <form className="edit-form" onSubmit={handleSubmit}>
-          
-          <div className="form-group">
+          {/* O RESTANTE DO SEU FORMULÁRIO HTML CONTINUA IGUAL */}
+          {/* ... */}
+           <div className="form-group">
             <label htmlFor="projectTitle">Nome do projeto</label>
             <input
               id="projectTitle"
