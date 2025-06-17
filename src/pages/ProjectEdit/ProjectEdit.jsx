@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
-import './ProjectEdit.css';
+import './ProjectEdit.css'; 
 
 const ProjectEdit = () => {
-  const { id } = useParams(); // O nome do parâmetro na sua rota deve ser 'id'
+  const { id } = useParams();
   const [project, setProject] = useState({
     projectTitle: '',
     projectDescription: '',
@@ -14,14 +14,13 @@ const ProjectEdit = () => {
     status: ''
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Estado para guardar a mensagem de erro
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const cpf = localStorage.getItem('cpf');
 
   useEffect(() => {
-    // ✅ CORREÇÃO: Só executa a busca se o 'id' for válido
     if (id) {
-      setLoading(true); // Garante que o estado de loading seja ativado
+      setLoading(true);
       api.get(`projects/${id}`)
         .then((res) => {
           const p = res.data;
@@ -39,15 +38,14 @@ const ProjectEdit = () => {
           setError('Erro ao carregar o projeto. Verifique o ID e tente novamente.');
         })
         .finally(() => {
-          setLoading(false); // Garante que o loading termine mesmo em caso de erro
+          setLoading(false);
         });
     } else {
-      // Caso o ID não esteja presente na URL
       console.error("ID do projeto não fornecido na URL.");
       setError("ID do projeto não encontrado.");
       setLoading(false);
     }
-  }, [id]); // O efeito depende do 'id'
+  }, [id]);
 
   const handleChange = (e) => {
     setProject({ ...project, [e.target.name]: e.target.value });
@@ -55,9 +53,7 @@ const ProjectEdit = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const deadlineParaEnviar = project.deadline.trim() === '' ? null : project.deadline;
-
     const payload = {
       projectTitle: project.projectTitle,
       projectDescription: project.projectDescription,
@@ -66,11 +62,9 @@ const ProjectEdit = () => {
       projectPrice: parseFloat(project.projectPrice),
       status: project.status
     };
-
     api.put(`projects/${id}/${cpf}`, payload)
       .then(() => {
         alert('✅ Projeto atualizado com sucesso!');
-        // Navega para uma rota absoluta
         navigate('/meusprojetos'); 
       })
       .catch((err) => {
@@ -84,74 +78,100 @@ const ProjectEdit = () => {
   if (error) return <p className="error-message">{error}</p>;
 
   return (
-    <div className="project-edit-container">
-      <button onClick={() => navigate(-1)} className="back-link">&larr; Voltar</button>
-      <h2 className="edit-title">Editar projeto</h2>
-      <form className="edit-form" onSubmit={handleSubmit}>
-        <label>Nome do projeto</label>
-        <input
-          type="text"
-          name="projectTitle"
-          className="input-field bordered"
-          value={project.projectTitle}
-          onChange={handleChange}
-          required
-        />
+    <div className="project-edit-page">
+      <div className="project-edit-container">
+        <div className="form-header">
+            <button onClick={() => navigate(-1)} className="back-button">&larr; Voltar</button>
+            <h2 className="edit-title">Editar Projeto</h2>
+        </div>
+        
+        <form className="edit-form" onSubmit={handleSubmit}>
+          
+          <div className="form-group">
+            <label htmlFor="projectTitle">Nome do projeto</label>
+            <input
+              id="projectTitle"
+              type="text"
+              name="projectTitle"
+              className="form-input"
+              value={project.projectTitle}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <label>Descrição do projeto</label>
-        <textarea
-          name="projectDescription"
-          className="textarea-field"
-          value={project.projectDescription}
-          onChange={handleChange}
-          required
-        />
+          <div className="form-group">
+            <label htmlFor="projectDescription">Descrição do projeto</label>
+            <textarea
+              id="projectDescription"
+              name="projectDescription"
+              className="form-input"
+              value={project.projectDescription}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <label>Especificações do projeto</label>
-        <textarea
-          name="projectSpecifications"
-          className="textarea-field"
-          value={project.projectSpecifications}
-          onChange={handleChange}
-          required
-        />
+          <div className="form-group">
+            <label htmlFor="projectSpecifications">Especificações do projeto</label>
+            <textarea
+              id="projectSpecifications"
+              name="projectSpecifications"
+              className="form-input"
+              value={project.projectSpecifications}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="deadline">Prazo de entrega</label>
+              <input
+                id="deadline"
+                type="date"
+                name="deadline"
+                className="form-input"
+                value={project.deadline}
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="projectPrice">Preço do projeto (R$)</label>
+              <input
+                id="projectPrice"
+                type="number"
+                step="0.01"
+                name="projectPrice"
+                className="form-input"
+                value={project.projectPrice}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
 
-        <label>Prazo de entrega</label>
-        <input
-          type="date"
-          name="deadline"
-          className="input-field bordered"
-          value={project.deadline}
-          onChange={handleChange}
-        />
-
-        <label>Preço do projeto</label>
-        <input
-          type="number"
-          step="0.01"
-          name="projectPrice"
-          className="input-field bordered"
-          value={project.projectPrice}
-          onChange={handleChange}
-          required
-        />
-
-        <label>Status do projeto</label>
-        <select
-          name="status"
-          className="input-field bordered"
-          value={project.status}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Selecione o status</option>
-          <option value="Aberto">Aberto</option>
-          <option value="Em andamento">Em andamento</option>
-          <option value="Concluído">Concluído</option>
-        </select>
-
-        <button type="submit" className="edit-button">Salvar alterações</button>
-      </form>
+          <div className="form-group">
+            <label htmlFor="status">Status do projeto</label>
+            <select
+              id="status"
+              name="status"
+              className="form-input"
+              value={project.status}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Selecione o status</option>
+              <option value="Aberto">Aberto</option>
+              <option value="Em andamento">Em andamento</option>
+              <option value="Concluído">Concluído</option>
+            </select>
+          </div>
+          
+          <button type="submit" className="submit-button">Salvar Alterações</button>
+        </form>
+      </div>
     </div>
   );
 };
