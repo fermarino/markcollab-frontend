@@ -24,6 +24,10 @@ import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import FreelancerProfile from '../pages/FreelancerProfile/FreelancerProfile'; // <--- Perfil Público
 import NotFoundPage from '../pages/NotFoundPage/NotFoundPage'; 
 
+import PaymentSuccess from '../pages/PaymentPage/PaymentSuccess'; // <--- Importe
+import PaymentPending from '../pages/PaymentPage/PaymentPending'; // <--- Importe
+import PaymentFailure from '../pages/PaymentPage/PaymentFailure'; // <--- Importe
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -63,6 +67,7 @@ const AppRoutes = () => {
       
       {/* --- Rota de fallback para páginas não encontradas --- */}
       <Route path="*" element={<NotFoundPage />} />
+        
     </Routes>
   );
 };
