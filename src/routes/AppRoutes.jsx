@@ -67,11 +67,6 @@ const AppRoutes = () => {
       
       {/* --- Rota de fallback para páginas não encontradas --- */}
       <Route path="*" element={<NotFoundPage />} />
-
-      {/* Rotas de Status de Pagamento (geralmente acessíveis publicamente após redirecionamento do MP) */}
-        <Route path="/pagamento/sucesso" element={<PaymentSuccess />} />
-        <Route path="/pagamento/pendente" element={<PaymentPending />} />
-        <Route path="/pagamento/falha" element={<PaymentFailure />} />
         
     </Routes>
   );
