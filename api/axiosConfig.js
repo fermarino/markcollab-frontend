@@ -1,4 +1,3 @@
-// src/api/axiosConfig.js
 import axios from 'axios';
 
 // ATENÇÃO: Troque pela URL da sua API de produção antes do deploy.

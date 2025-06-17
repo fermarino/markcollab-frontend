@@ -45,7 +45,7 @@ const ProfilePage = () => {
     setSaving(true);
     try {
       // 3. USE 'api.put'
-      await api.put(`/api/user/me/update`, formData);
+      await api.put(`user/me/update`, formData);
       addToast('success', 'Perfil atualizado com sucesso!');
       await fetchUser();
       setIsEditing(false);
@@ -70,7 +70,7 @@ const ProfilePage = () => {
     
     try {
       // 4. USE 'api.post'. MANTENHA O HEADER 'Content-Type' PARA UPLOAD DE ARQUIVO
-      await api.post(`/api/user/upload-profile-picture`, formDataImg, {
+      await api.post(`user/upload-profile-picture`, formDataImg, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }

@@ -22,7 +22,6 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      // ✅ CORREÇÃO APLICADA AQUI: Adicionado o prefixo /api/
       const res = await api.post('auth/login', { identifier, password });
       
       const { token, cpf, role } = res.data;

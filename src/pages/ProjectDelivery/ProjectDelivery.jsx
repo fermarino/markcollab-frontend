@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// 1. USE O SERVIÇO 'api'
 import api from '../../services/api';
 import styles from './ProjectDelivery.module.css'; 
 import { FiPaperclip, FiLink, FiCheckCircle } from 'react-icons/fi'; 
@@ -32,9 +31,8 @@ export default function ProjectDelivery() {
       formData.append('attachments', file);
     });
 
-    // 2. USE 'api.post' E O CAMINHO CORRETO. NOTE QUE A VARIÁVEL DE AMBIENTE NÃO É MAIS USADA AQUI.
-    // O 'Content-Type' é importante para upload de arquivos.
-    api.post(`/api/projects/${projectId}/deliver`, formData, {
+   
+    api.post(`projects/${projectId}/deliver`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

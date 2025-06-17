@@ -20,8 +20,6 @@ const ProjectEdit = () => {
   // Não precisamos mais pegar o token manualmente aqui
 
   useEffect(() => {
-    // A verificação de token é feita pelo interceptor do 'api.js'
-    // 2. USE 'api.get' E O CAMINHO COM /api. O TOKEN É INJETADO AUTOMATICAMENTE
     api.get(`projects/${id}`)
       .then((res) => {
         const p = res.data;
@@ -60,8 +58,7 @@ const ProjectEdit = () => {
       status: project.status
     };
 
-    // 3. USE 'api.put'. O TOKEN É INJETADO AUTOMATICAMENTE
-    api.put(`/api/projects/${id}/${cpf}`, payload)
+    api.put(`projects/${id}/${cpf}`, payload)
       .then(() => {
         alert('✅ Projeto atualizado com sucesso!');
         navigate('/meusprojetos');

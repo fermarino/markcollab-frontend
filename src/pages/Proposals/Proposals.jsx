@@ -29,7 +29,6 @@ export default function Proposals() {
     }
 
     setLoading(true);
-    // 1. ADICIONE O PREFIXO /api/ EM TODAS AS CHAMADAS
     Promise.all([
       api.get(`projects/${projectId}`),
       api.get(`interests/project/${projectId}`)
@@ -57,7 +56,6 @@ export default function Proposals() {
     }
 
     try {
-      // 2. ADICIONE O PREFIXO /api/
       console.log(`Tentando contratar freelancer ${freelancerCpf} para projeto ${projectId} pelo empregador ${employerCpf}`);
       await api.post(`projects/${projectId}/hire/${freelancerCpf}/${employerCpf}`);
       addToast('success', 'Freelancer contratado! Redirecionando para o pagamento...');
@@ -67,7 +65,6 @@ export default function Proposals() {
       console.log('Salvando no localStorage: Project ID:', projectId);
       console.log('Salvando no localStorage: Freelancer CPF:', freelancerCpf);
 
-      // 3. ADICIONE O PREFIXO /api/
       const response = await api.post(`projects/${project.projectId}/pay/${employerCpf}`);
       const initPointUrl = response.data;
 
