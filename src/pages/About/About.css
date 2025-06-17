@@ -11,8 +11,8 @@
   margin-top: 3rem;
 }
 
-.sobre_subDiv1{
-  padding-right: 3rem;
+.sobre_subDiv1 p{
+  font-size: 1.2rem;
 }
 
 #markcollab{
@@ -85,6 +85,11 @@
 
 .sobre_subdiv3{
  margin-left: 40px;
+ margin-bottom: 1.9rem;
+}
+
+.sobre_subdiv3 p{
+ text-align: justify;
 }
 
 .sobre_div4{

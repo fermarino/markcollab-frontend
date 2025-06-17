@@ -12,7 +12,7 @@ const About = () => {
                 <div className='sobre_subDiv1'>
                     <h1>Conheça a</h1>
                     <h1 id='markcollab'>MarkCollab</h1>
-                    <p>Descubra a equipe de marketing que vai transformar o seu negócio</p>
+                    <p>Descubra O freelancer que vai transformar o seu negócio</p>
                 </div>
             </div>
             <div className='sobre_div2'>
@@ -23,7 +23,7 @@ const About = () => {
                      <img src={meeting} alt="foto de reunião de trabalho" id='meeting' />
                     </div>
                     <div className='sobre_subdiv2'>
-                        <p>Na <strong>MarkCollab</strong>, somos mais do que uma startup de marketing e colaboração — somos o parceiro estratégico que você precisa para levar seu negócio ao próximo nível. Desde a concepção até a execução, estamos aqui para garantir que sua empresa receba o melhor.  Criamos a equipe de marketing <strong>PERFEITA</strong> para atender às suas necessidades específicas e ajudar você a alcançar seus objetivos.
+                        <p>Na <strong>MarkCollab</strong>, somos mais do que uma startup de marketing e tecnologia — somos o parceiro estratégico que você precisa para levar seu negócio ao próximo nível. Desde a concepção até a execução, estamos aqui para garantir que sua empresa receba o melhor.  Encontramos o freelancer <strong>PERFEITO</strong> para atender às suas necessidades específicas e ajudar você a alcançar seus objetivos.
                         <strong> Realizamos todos projetos de marketing e tecnologia</strong></p>
                     </div>
                 </div>
@@ -35,7 +35,7 @@ const About = () => {
                 </div>
                 <div className='sobre_subdiv3'>
                     <h2 id='nossaMissao'>Nossa missão</h2>
-                    <p>Nossa missão é facilitar a vida do empreendedor, oferecendo soluções completas em marketing digital. Queremos que você possa se concentrar no que realmente importa: o seu negócio.</p>
+                    <p>Nossa missão é facilitar a vida do empreendedor, oferecendo soluções completas em marketing e tecnologia. Queremos que você possa se concentrar no que realmente importa: o seu negócio.</p>
                 </div>
             </div>
             <div className='sobre_div4'>

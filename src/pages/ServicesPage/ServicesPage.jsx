@@ -19,8 +19,8 @@ const Services = () => {
               <p className='servicos_p'>Tenha um site moderno, responsivo e otimizado para SEO. Atraia mais visitantes e converta-os em clientes.</p>
             </div>
             <div className='div2_content'>
-              <h3 className='servicos_h3'>Criação de Cursos</h3>
-              <p className='servicos_p'>Desenvolva cursos online envolventes e educativos. Transforme seu conhecimento em produtos valiosos que atraem e educam seu público-alvo.</p>
+              <h3 className='servicos_h3'>Análise de Dados e Criação de Dashboards</h3>
+              <p className='servicos_p'>Transformamos seus dados brutos em insights valiosos para a tomada de decisão. Realizamos a limpeza, tratamento e análise de suas planilhas e bancos de dados, criando dashboards interativos e visualmente intuitivos no Microsoft Power BI.</p>
             </div>
             <div className='div2_content'>
               <h3 className='servicos_h3'>Tráfego pago</h3>
@@ -31,8 +31,8 @@ const Services = () => {
               <p className='servicos_p'>Um design profissional é a chave para o sucesso do seu negócio. Crie uma identidade visual forte e memorável.</p>
             </div>
             <div className='div2_content'>
-              <h3 className='servicos_h3'>Criação de eBooks</h3>
-              <p className='servicos_p'>Produza eBooks que educam, engajam e convertem. Desenvolvemos conteúdos ricos e atraentes para fortalecer a sua marca.</p>
+              <h3 className='servicos_h3'>Suporte Técnico de TI Remoto</h3>
+              <p className='servicos_p'>Oferecemos suporte técnico ágil e eficiente para resolver os problemas de tecnologia da sua empresa. Através de acesso remoto, realizamos a configuração de e-mails, remoção de vírus, instalação de softwares e solução de problemas em computadores </p>
             </div>
             <div className='div2_content'>
               <h3 className='servicos_h3'>Campanhas de marketing</h3>

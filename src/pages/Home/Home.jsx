@@ -12,7 +12,7 @@ const Home = () => {
       <div className='home_container'>
         <div className='home_div1'>
           <div className='home_div1_1'>
-            <h1 className='home_h1'>A equipe de marketing perfeita para o seu negócio!</h1>
+            <h1 className='home_h1'>O Freelancer perfeito para o seu negócio!</h1>
             <p>Estamos aqui para simplificar os seus projetos de marketing e tecnologia da informação, proporcionando uma experiência sem estresse e resultados que realmente fazem a diferença.</p>
           </div>
           <div>
@@ -25,7 +25,7 @@ const Home = () => {
           </div>
           <div className='home_div2_divs2'>
             <h1 className='home_h1'>Por que escolher a MarkCollab? </h1>
-            <p>Na MarkCollab, reunimos uma equipe de especialistas para criar soluções de marketing sob medida para sua empresa. Seja para desenvolver campanhas de social media, criar conteúdos, ou elaborar estratégias completas de marketing, estamos aqui para transformar suas ideias em projetos de sucesso. Nosso compromisso é entender a fundo suas necessidades, conectar você aos melhores profissionais e garantir que cada etapa do projeto seja executada com excelência. </p>
+            <p>Na MarkCollab, você encontra um freelancer para realizar soluções sob medida para sua empresa. Seja na área de marketing ou tecnologia, estamos aqui para transformar suas ideias em projetos de sucesso. Nosso compromisso é entender a fundo suas necessidades, conectar você aos melhores profissionais e garantir que cada etapa do projeto seja executada com excelência. </p>
           </div>
         </div>
         <div className='home_div3'>
@@ -40,8 +40,8 @@ const Home = () => {
              <p>Analisamos suas demandas e desafios, criando uma estratégia personalizada  que se alinha perfeitamente com suas metas.</p>
             </div>
             <div className='home_div3_divs1'>
-              <h3>Criamos a equipe perfeita!</h3>
-              <p>Montamos uma equipe de especialistas dedicada  ao seu projeto e designamos um líder para garantir  a qualidade e o sucesso em cada etapa </p>
+              <h3>Encontramos o freelancer perfeito</h3>
+              <p>Encontramos um freelancer dedicado  ao seu projeto para garantir  a qualidade e o sucesso em cada etapa </p>
            </div>
           </div>
           

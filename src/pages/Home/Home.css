@@ -1,6 +1,11 @@
+.home_container{
+  display: flex;
+  flex-direction: column;
+}
+
 .home_div1, .home_div2 {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
   gap: 2rem;
@@ -10,6 +15,11 @@
 .home_div1 {
   margin-top: 3rem;
   margin-bottom: 3rem;
+}
+
+.home_div1 h1 {
+  text-align: center;
+  font-size: 2rem;
 }
 
 .home_div1 p {
@@ -46,9 +56,16 @@
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  text-align: center;
   margin-bottom: 50px;
   padding: 1rem;
+}
+
+.home_div3{
+  text-align: center;
+}
+
+.home_div3 p{
+  text-align: justify;
 }
 
 .home_div3 h1 {
