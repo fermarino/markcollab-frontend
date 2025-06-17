@@ -17,14 +17,15 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e) {
+   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
       const res = await api.post('/auth/login', { identifier, password });
-      const { token } = res.data;
-      await login(token);
+      // Pass the entire data object or relevant parts (token, cpf, role)
+      const { token, cpf, role } = res.data; // Destructure all relevant data
+      await login({ token, cpf, role }); // Pass an object to the login function
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Credenciais inválidas. Tente novamente.');
